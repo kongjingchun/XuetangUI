@@ -6,12 +6,11 @@
 
 from selenium.webdriver.common.by import By
 
-from base.base_page import BasePage
 from logs.log import log
 from page.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
-class CourseObjectivePage(CourseWorkbenchPage, BasePage):
+class CourseObjectivePage(CourseWorkbenchPage):
     """课程目标页面类
     继承BasePage类，提供课程目标页面的元素操作方法
     符合Selenium官方Page Object Model设计模式

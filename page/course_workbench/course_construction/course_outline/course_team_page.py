@@ -5,12 +5,12 @@
 # @Desc  : 课程团队页面对象类，封装课程团队相关的页面操作方法
 
 from selenium.webdriver.common.by import By
-from base.base_page import BasePage
+
 from logs.log import log
 from page.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
-class CourseTeamPage(CourseWorkbenchPage, BasePage):
+class CourseTeamPage(CourseWorkbenchPage):
     """课程团队页面类
 
     继承BasePage类，提供课程团队页面的元素操作方法

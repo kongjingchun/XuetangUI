@@ -4,14 +4,13 @@
 # @Date  : 2026/01/20
 # @Desc  : 建设历程页面对象类，封装建设历程相关的页面操作方法
 
-from base.base_page import BasePage
 from selenium.webdriver.common.by import By
 
 from logs.log import log
 from page.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
-class ConstructionHistoryPage(CourseWorkbenchPage, BasePage):
+class ConstructionHistoryPage(CourseWorkbenchPage):
     """建设历程页面类
 
     继承BasePage类，提供建设历程页面的元素操作方法

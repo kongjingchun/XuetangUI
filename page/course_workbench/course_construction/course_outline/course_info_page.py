@@ -6,12 +6,11 @@
 
 from selenium.webdriver.common.by import By
 
-from base.base_page import BasePage
 from logs.log import log
 from page.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
-class CourseInfoPage(CourseWorkbenchPage, BasePage):
+class CourseInfoPage(CourseWorkbenchPage):
     """课程信息页面类
 
     继承BasePage类，提供课程信息页面的元素操作方法

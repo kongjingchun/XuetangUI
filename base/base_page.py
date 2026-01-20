@@ -596,6 +596,186 @@ class BasePage:
                     # 重试后仍然失败
                     raise Exception(f"元素 {locator_expression} 填值失败（已重试1次）：{str(e)}")
 
+    def input_rich_text(self, locator, text, timeout=10, clear_first=True, fluent=False):
+        """
+        向富文本编辑器输入内容（适用于contenteditable元素）
+
+        富文本编辑器通常使用contenteditable="true"的div元素，需要特殊处理：
+        1. 先点击元素获得焦点
+        2. 清除原有内容
+        3. 使用多种方式输入内容（普通输入、JavaScript设置等）
+        4. 触发必要的事件（input、change等）让编辑器识别内容变化
+
+        Args:
+            locator: 定位器元组
+            text: 要输入的文本内容
+            timeout: 超时时间(秒)，默认10秒
+            clear_first: 是否先清除原有内容，默认True
+            fluent: 是否支持链式调用，默认False
+                     True: 返回self，支持链式调用
+                     False: 返回bool，True表示成功，False表示失败
+
+        Returns:
+            self 或 bool: 根据fluent参数决定返回值
+
+        Raises:
+            Exception: 如果输入失败（当fluent=True时）
+        """
+        # 确保页面完全加载完成
+        self.wait_for_ready_state_complete(timeout=5)
+
+        # Headless模式下等待元素渲染
+        self._wait_for_headless_render(wait_time=0.5)
+
+        # 将输入值转换为字符串
+        fill_value = str(text) if isinstance(text, (int, float)) else text
+
+        locate_type, locator_expression = locator
+        log.info(f"向富文本编辑器 {locator_expression} 输入值 {fill_value}")
+
+        # 获取并操作元素，最多重试1次
+        for attempt in range(2):
+            try:
+                # 等待元素出现并可见（支持Headless模式优化）
+                try:
+                    element = self._wait_for_element(locator, condition_type="visible", timeout=timeout)
+                except TimeoutException as e:
+                    # 如果超时，尝试检查页面状态
+                    if self._is_headless_mode():
+                        current_url = self.driver.current_url
+                        page_source_length = len(self.driver.page_source)
+                        log.error(f"等待富文本编辑器元素超时，当前URL: {current_url}, 页面源码长度: {page_source_length}")
+                        log.error(f"尝试在页面源码中搜索定位表达式: {locator_expression}")
+                        # 检查元素是否在页面源码中
+                        if locator_expression in self.driver.page_source:
+                            log.warning(f"定位表达式在页面源码中找到，但元素可能不可见")
+                    raise
+
+                # 滚动元素到可视区域中心位置
+                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element)
+                time.sleep(0.2)  # 等待滚动完成
+
+                # 先点击元素获得焦点
+                try:
+                    element.click()
+                    time.sleep(0.2)  # 等待焦点获得
+                except Exception as click_error:
+                    log.warning(f"点击富文本编辑器失败，尝试使用JavaScript点击：{click_error}")
+                    try:
+                        self.driver.execute_script("arguments[0].click();", element)
+                        time.sleep(0.2)
+                    except Exception:
+                        pass  # 点击失败不影响后续操作
+
+                # 清除原有内容
+                if clear_first:
+                    try:
+                        # 方法1: 使用Ctrl+A选中所有内容，然后删除
+                        ActionChains(self.driver).key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).perform()
+                        time.sleep(0.1)
+                        element.send_keys(Keys.DELETE)
+                        time.sleep(0.1)
+                    except Exception as clear_error:
+                        log.warning(f"使用键盘快捷键清除内容失败，尝试使用JavaScript清除：{clear_error}")
+                        try:
+                            # 方法2: 使用JavaScript清除内容
+                            self.driver.execute_script("arguments[0].innerHTML = '';", element)
+                            self.driver.execute_script("arguments[0].textContent = '';", element)
+                            time.sleep(0.1)
+                        except Exception:
+                            pass  # 清除失败不影响后续操作
+
+                # 尝试多种方式输入内容
+                input_success = False
+                input_methods = [
+                    # 方法1: 普通send_keys输入（适用于简单的富文本编辑器）
+                    ("普通输入", lambda: element.send_keys(fill_value)),
+                    # 方法2: 使用JavaScript设置textContent（纯文本）
+                    ("JavaScript textContent", lambda: self.driver.execute_script(
+                        "arguments[0].textContent = arguments[1];", element, fill_value
+                    )),
+                    # 方法3: 使用JavaScript设置innerHTML（支持HTML格式）
+                    ("JavaScript innerHTML", lambda: self.driver.execute_script(
+                        "arguments[0].innerHTML = arguments[1];", element, fill_value
+                    )),
+                ]
+
+                for method_name, input_func in input_methods:
+                    try:
+                        input_func()
+                        time.sleep(0.2)  # 等待输入完成
+
+                        # 触发input事件，确保富文本编辑器识别内容变化
+                        try:
+                            self.driver.execute_script(
+                                "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", element
+                            )
+                        except Exception:
+                            pass
+
+                        # 触发change事件
+                        try:
+                            self.driver.execute_script(
+                                "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", element
+                            )
+                        except Exception:
+                            pass
+
+                        # 验证内容是否成功输入
+                        try:
+                            # 等待一下让内容更新
+                            time.sleep(0.2)
+                            # 获取元素内容进行验证
+                            actual_content = self.driver.execute_script("return arguments[0].textContent || arguments[0].innerText;", element)
+                            if fill_value in actual_content or actual_content.strip() == fill_value.strip():
+                                log.info(f"富文本编辑器 {locator_expression} 使用{method_name}输入成功")
+                                input_success = True
+                                break
+                            else:
+                                log.warning(f"富文本编辑器内容验证失败，期望: {fill_value}, 实际: {actual_content}")
+                        except Exception as verify_error:
+                            log.warning(f"验证富文本编辑器内容失败：{verify_error}，假设输入成功")
+                            input_success = True
+                            break
+
+                    except Exception as method_error:
+                        log.warning(f"富文本编辑器 {locator_expression} 使用{method_name}输入失败：{method_error}")
+                        if method_name == input_methods[-1][0]:
+                            # 最后一种方法也失败，抛出异常
+                            raise
+                        continue
+
+                if not input_success:
+                    raise Exception(f"富文本编辑器 {locator_expression} 所有输入方法都失败")
+
+                # 等待页面就绪
+                self.wait_for_ready_state_complete()
+                return self if fluent else True
+
+            except StaleElementReferenceException:
+                if attempt == 0:
+                    # 第一次失败，等待页面刷新后重试1次
+                    log.warning(f"富文本编辑器 {locator_expression} 输入时发生stale element异常，等待页面刷新后重试1次")
+                    self.wait_for_ready_state_complete()
+                    time.sleep(0.2)
+                    continue
+                else:
+                    # 重试后仍然失败
+                    raise Exception(f"富文本编辑器 {locator_expression} 填值失败：页面元素过期（已重试1次）")
+            except TimeoutException as e:
+                # 超时失败，不重试
+                raise Exception(f"富文本编辑器 {locator_expression} 填值失败：元素超时未出现或不可交互 - {str(e)}")
+            except Exception as e:
+                if attempt == 0:
+                    log.warning(f"富文本编辑器 {locator_expression} 输入失败（第{attempt + 1}次尝试），将重试1次：{str(e)}")
+                    time.sleep(0.3)
+                    continue
+                else:
+                    # 重试后仍然失败
+                    raise Exception(f"富文本编辑器 {locator_expression} 填值失败（已重试1次）：{str(e)}")
+
+        raise Exception(f"富文本编辑器 {locator_expression} 填值失败：已重试1次均失败")
+
     def hover(self, locator, timeout=10):
         """
         鼠标悬停到指定元素（优化：减少等待时间）
