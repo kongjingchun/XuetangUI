@@ -215,6 +215,8 @@ class TestDeleteData:
         dean_user_info = GetConf().get_user_info("dean")
         # 专业负责人信息
         prof_user_info = GetConf().get_user_info("prof")
+        # 教师信息
+        teacher_user_info = GetConf().get_user_info("teacher")
 
         # 使用TestContextHelper封装公共操作
         helper = TestContextHelper(driver)
@@ -239,6 +241,11 @@ class TestDeleteData:
             add_img_2_report(driver, "删除教务管理员")
             assert result is True, "删除教务管理员失败"
 
+        with allure.step("删除教师"):
+            result = user_page.delete_user_by_code(teacher_user_info['工号'])
+            add_img_2_report(driver, "删除教师")
+            assert result is True, "删除教师失败"
+
     @pytest.mark.skip_local  # 本地部署环境下跳过
     @pytest.mark.run(order=670)
     @allure.story("删除cms用户")
@@ -258,7 +265,8 @@ class TestDeleteData:
         dean_cms_user_info = GetConf().get_user_info("dean_cms")
         # CMS专业负责人信息
         prof_cms_user_info = GetConf().get_user_info("prof_cms")
-
+        # CMS教师信息
+        teacher_cms_user_info = GetConf().get_user_info("teacher_cms")
         # 使用TestContextHelper封装公共操作
         helper = TestContextHelper(driver)
 
@@ -280,3 +288,8 @@ class TestDeleteData:
             result = cms_user_page.delete_cms_user_by_username(dean_cms_user_info['username'])
             add_img_2_report(driver, "删除CMS教务管理员")
             assert result is True, "删除CMS教务管理员失败"
+
+        with allure.step("删除CMS教师"):
+            result = cms_user_page.delete_cms_user_by_username(teacher_cms_user_info['username'])
+            add_img_2_report(driver, "删除CMS教师")
+            assert result is True, "删除CMS教师失败"

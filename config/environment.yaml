@@ -1,5 +1,5 @@
 # 全局变量配置（只需修改这里的序号）
-test_suffix: 677 # 测试环境序号
+test_suffix: 679 # 测试环境序号
 
 # 部署环境配置（控制浏览器驱动和用例执行）
 部署环境:
@@ -8,6 +8,11 @@ test_suffix: 677 # 测试环境序号
 school_name: 智慧大学
 url: https://www.gqkt.cn/
 # url: http://192.168.200.215/
+
+# 院系信息（需要在使用之前定义，因为user部分会引用dept_name）
+department:
+  院系名称: &dept_name auto_dept{suffix}
+  院系代码: Auto_dept{suffix}
 
 user:
   # 初始管理员
@@ -39,11 +44,17 @@ user:
   prof_cms:
     username: *prof_code
     password: prof_code
-
-# 院系信息
-department:
-  院系名称: &dept_name auto_dept{suffix}
-  院系代码: Auto_dept{suffix}
+  # 教师
+  teacher:
+    姓名: &teacher_name teacher{suffix}
+    工号: &teacher_code teacher_code{suffix}
+    手机: "15100000003"
+    邮箱: Autotest003@xuetangx.com
+    学院: *dept_name
+  # CMS 教师
+  teacher_cms:
+    username: *teacher_code
+    password: teacher_code
 
 major:
   专业名称: &major_name auto_major{suffix}

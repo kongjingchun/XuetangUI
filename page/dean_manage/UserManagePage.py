@@ -48,6 +48,8 @@ class UserManagePage(BasePage):
     DELETE_CONFIRM_BUTTON = (By.XPATH, "//div[contains(@aria-label,'确认删除') or contains(@aria-label,'删除')]//button[contains(.,'删除')]")
     # 删除成功提示框
     DELETE_SUCCESS_ALERT = (By.XPATH, "//p[contains(text(),'删除成功')]")
+    # 新建用户关闭所属学院下拉框
+    NEW_USER_DEPT_DROPDOWN_CLOSE = (By.XPATH, "//label[text()='所属学院']//following-sibling::div//div[@class='el-select__suffix']")
 
     # ==================== 动态定位器方法（需要参数的定位器）====================
 
@@ -106,6 +108,30 @@ class UserManagePage(BasePage):
         """
         return (By.XPATH, "//tr[.//td[contains(.,'" + code + "')]]//button[contains(.,'编辑')]")
 
+    # 新建用户根据角色返回学院下拉框
+    def get_new_user_dept_dropdown_locator(self, role_name):
+        """获取新建用户学院下拉框的定位器
+
+        Args:
+            role_name: 角色名称
+
+        Returns:
+            tuple: 定位器元组 (By.XPATH, xpath)
+        """
+        return (By.XPATH, "//div[contains(@aria-label,'" + role_name + "')]//span[text()='请选择学院']")
+
+    # 新建用户根据院系返回学院下拉框选项
+    def get_new_user_dept_dropdown_option_locator(self, dept_name):
+        """获取新建用户学院下拉框选项的定位器
+
+        Args:
+            dept_name: 学院名称
+
+        Returns:
+            tuple: 定位器元组 (By.XPATH, xpath)
+        """
+        return (By.XPATH, "(//li/span[text()='" + dept_name + "'])[2]")
+
     # ==================== 页面操作方法 ====================
 
     def move_add_user_button(self):
@@ -143,6 +169,41 @@ class UserManagePage(BasePage):
         locator = self.get_create_user_input_locator(input_name)
         log.info(f"输入用户信息：{input_name}为：{value}，定位器为：{locator[1]}")
         return self.input_text(locator, value)
+
+    def click_new_user_dept_dropdown(self, role_name):
+        """点击新建用户学院下拉框
+
+        Args:
+            role_name: 角色名称
+
+        Returns:
+            点击操作结果
+        """
+        locator = self.get_new_user_dept_dropdown_locator(role_name)
+        log.info(f"点击新建用户学院下拉框，定位器为：{locator[1]}")
+        return self.click(locator)
+
+    def click_new_user_dept_dropdown_option(self, dept_name):
+        """点击新建用户学院下拉框选项
+
+        Args:
+            dept_name: 学院名称
+
+        Returns:
+            点击操作结果
+        """
+        locator = self.get_new_user_dept_dropdown_option_locator(dept_name)
+        log.info(f"点击新建用户学院下拉框选项，定位器为：{locator[1]}")
+        return self.click(locator)
+
+    def click_new_user_dept_dropdown_close(self):
+        """点击新建用户学院下拉框关闭
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击新建用户学院下拉框关闭，定位器为：{self.NEW_USER_DEPT_DROPDOWN_CLOSE[1]}")
+        return self.click(self.NEW_USER_DEPT_DROPDOWN_CLOSE)
 
     def click_submit_user_button(self):
         """点击提交信息按钮
@@ -236,7 +297,12 @@ class UserManagePage(BasePage):
 
         # 根据user_info字典动态输入用户信息
         for input_name, value in user_info.items():
-            self.input_user_value(input_name, str(value))
+            if input_name == '学院':
+                self.click_new_user_dept_dropdown(role_name)
+                self.click_new_user_dept_dropdown_option(value)
+                self.click_new_user_dept_dropdown_close()
+            else:
+                self.input_user_value(input_name, str(value))
         self.click_submit_user_button()
         results = self.is_create_success_alert_display()
         self.switch_out_iframe()
