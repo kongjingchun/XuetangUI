@@ -1,8 +1,8 @@
 {
-  "failed_testcases": [],
+  "failed_testcases": [
+    "\n测试添加课程负责人流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n"
+  ],
   "success_testcases": [
-    "\n测试绑定教师流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n",
-    "\n测试创建教师流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n",
-    "\n测试绑定教师流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n"
+    "\n测试添加课程负责人流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n"
   ]
 }

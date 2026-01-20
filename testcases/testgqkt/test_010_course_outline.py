@@ -8,6 +8,7 @@ import allure
 import pytest
 
 from common.report_add_img import add_img_2_report
+from page.course_workbench.course_construction.course_outline.CourseTeamPage import CourseTeamPage
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from page.teacher_workbench.MyTeachingCoursesPage import MyTeachingCoursesPage
@@ -132,3 +133,52 @@ class TestCourseOutline:
             result = course_objective_page.associate_graduation_requirements("分解指标点名称1.1")
             add_img_2_report(driver, "关联毕业要求")
             assert result is True, "关联毕业要求失败"
+
+    @pytest.mark.run(order=270)
+    @allure.story("添加课程负责人")
+    def test_003_add_course_leader(self, driver):
+        """
+        测试添加课程负责人流程
+
+        Args:
+            driver: WebDriver实例（通过pytest fixture注入）
+
+        Returns:
+            None
+        """
+        # 专业管理员账号
+        prof_cms_user_info = GetConf().get_user_info("prof_cms")
+        # 课程信息
+        course_info = GetConf().get_info("course")
+        # 教师信息
+        teacher_cms_user_info = GetConf().get_user_info("teacher_cms")
+        # 使用TestContextHelper封装公共操作
+        helper = TestContextHelper(driver)
+
+        with allure.step("登录、切换教师身份、导航到我教的课"):
+            result = helper.setup_context(user_info=prof_cms_user_info, role_name="教师", menu_name="我教的课")
+            assert result is True, "登录、切换教师身份、导航到我教的课失败"
+
+        with allure.step("根据课程名称点击课程卡片"):
+            my_teaching_courses_page = MyTeachingCoursesPage(driver)
+            result = my_teaching_courses_page.click_course(course_info['课程名称'])
+            add_img_2_report(driver, "根据课程名称点击课程卡片")
+            assert result is True, "根据课程名称点击课程卡片失败"
+
+        with allure.step("点击课程大纲菜单栏"):
+            course_info_page = CourseInfoPage(driver)
+            result = course_info_page.click_left_menu("课程大纲")
+            add_img_2_report(driver, "点击课程大纲菜单栏")
+            assert result is True, "点击课程大纲菜单栏失败"
+
+        with allure.step("点击课程团队菜单栏"):
+            course_team_page = CourseTeamPage(driver)
+            result = course_team_page.click_left_menu("课程团队")
+            add_img_2_report(driver, "点击课程团队菜单栏")
+            assert result is True, "点击课程团队菜单栏失败"
+
+        with allure.step("添加课程负责人"):
+            course_team_page = CourseTeamPage(driver)
+            result = course_team_page.add_course_leader(teacher_cms_user_info["username"])
+            add_img_2_report(driver, "添加课程负责人")
+            assert result is True, "添加课程负责人失败"

@@ -1,5 +1,5 @@
 # 全局变量配置（只需修改这里的序号）
-test_suffix: 679 # 测试环境序号
+test_suffix: 681 # 测试环境序号
 
 # 部署环境配置（控制浏览器驱动和用例执行）
 部署环境:
@@ -51,6 +51,7 @@ user:
     手机: "15100000003"
     邮箱: Autotest003@xuetangx.com
     学院: *dept_name
+  
   # CMS 教师
   teacher_cms:
     username: *teacher_code

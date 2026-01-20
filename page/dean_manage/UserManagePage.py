@@ -300,7 +300,6 @@ class UserManagePage(BasePage):
             if input_name == '学院':
                 self.click_new_user_dept_dropdown(role_name)
                 self.click_new_user_dept_dropdown_option(value)
-                self.click_new_user_dept_dropdown_close()
             else:
                 self.input_user_value(input_name, str(value))
         self.click_submit_user_button()
