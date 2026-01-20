@@ -14,6 +14,7 @@ from common.yaml_config import GetConf
 from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage
 from page.course_workbench.course_construction.course_outline.course_info_page import CourseInfoPage
 from page.course_workbench.course_construction.course_outline.course_objective_page import CourseObjectivePage
+from page.course_workbench.course_construction.course_outline.construction_history_page import ConstructionHistoryPage
 
 
 class TestCourseOutline:
@@ -182,3 +183,50 @@ class TestCourseOutline:
             result = course_team_page.add_course_leader(teacher_cms_user_info["username"])
             add_img_2_report(driver, "添加课程负责人")
             assert result is True, "添加课程负责人失败"
+
+    @pytest.mark.run(order=280)
+    @allure.story("编辑建设历程")
+    def test_004_edit_construction_history(self, driver):
+        """
+        测试编辑建设历程流程
+
+        Args:
+            driver: WebDriver实例（通过pytest fixture注入）
+
+        Returns:
+            None
+        """
+        # 专业管理员账号
+        prof_cms_user_info = GetConf().get_user_info("prof_cms")
+        # 课程信息
+        course_info = GetConf().get_info("course")
+        # 使用TestContextHelper封装公共操作
+        helper = TestContextHelper(driver)
+
+        with allure.step("登录、切换教师身份、导航到我教的课"):
+            result = helper.setup_context(user_info=prof_cms_user_info, role_name="教师", menu_name="我教的课")
+            assert result is True, "登录、切换教师身份、导航到我教的课失败"
+
+        with allure.step("根据课程名称点击课程卡片"):
+            my_teaching_courses_page = MyTeachingCoursesPage(driver)
+            result = my_teaching_courses_page.click_course(course_info['课程名称'])
+            add_img_2_report(driver, "根据课程名称点击课程卡片")
+            assert result is True, "根据课程名称点击课程卡片失败"
+
+        with allure.step("点击课程大纲菜单栏"):
+            course_info_page = CourseInfoPage(driver)
+            result = course_info_page.click_left_menu("课程大纲")
+            add_img_2_report(driver, "点击课程大纲菜单栏")
+            assert result is True, "点击课程大纲菜单栏失败"
+
+        with allure.step("点击建设历程菜单栏"):
+            construction_history_page = ConstructionHistoryPage(driver)
+            result = construction_history_page.click_left_menu("建设历程")
+            add_img_2_report(driver, "点击建设历程菜单栏")
+            assert result is True, "点击建设历程菜单栏失败"
+
+        with allure.step("编辑建设历程"):
+            construction_history_page = ConstructionHistoryPage(driver)
+            result = construction_history_page.edit_construction_history("2026-01-01", "auto_construction_content", "auto_get_honor", "auto_construction_team")
+            add_img_2_report(driver, "编辑建设历程")
+            assert result is True, "编辑建设历程失败"
