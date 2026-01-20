@@ -10,8 +10,8 @@ import pytest
 from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.ai_major.TrainingProgramRevisionPage import TrainingProgramRevisionPage
-from page.ai_major.TrainingProgramManage.TrainingProgramManagePage import TrainingProgramManagePage
+from page.ai_major.training_program_revision_page import TrainingProgramRevisionPage
+from page.ai_major.TrainingProgramManage.training_program_manage_page import TrainingProgramManagePage
 
 
 class TestTrainingProgram:

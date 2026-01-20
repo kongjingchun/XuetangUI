@@ -11,9 +11,9 @@ from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from logs.log import log
-from page.dean_manage.RoleManagePage import RoleManagePage
-from page.dean_manage.UserManagePage import UserManagePage
-from page.cms.CmsUserManagePage import CmsUserManagePage
+from page.dean_manage.role_manage_page import RoleManagePage
+from page.dean_manage.user_manage_page import UserManagePage
+from page.cms.cms_user_manage_page import CmsUserManagePage
 
 
 class TestUser:

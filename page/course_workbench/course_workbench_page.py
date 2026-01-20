@@ -6,7 +6,7 @@
 
 from selenium.webdriver.common.by import By
 
-from base.BasePage import BasePage
+from base.base_page import BasePage
 from logs.log import log
 
 

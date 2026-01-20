@@ -5,7 +5,7 @@
 # @Desc  : 专业课程群图谱页面对象类，封装专业课程群图谱相关的页面操作方法
 from selenium.webdriver.common.by import By
 
-from base.BasePage import BasePage
+from base.base_page import BasePage
 from logs.log import log
 
 

@@ -10,13 +10,13 @@ import pytest
 from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.ai_major.MajorManagePage import MajorManagePage
-from page.ai_major.TrainingProgramManage.TrainingProgramManagePage import TrainingProgramManagePage
-from page.cms.CmsUserManagePage import CmsUserManagePage
-from page.dean_manage.AdminClassManagePage import AdminClassManagePage
-from page.dean_manage.CourseManagePage import CourseManagePage
-from page.dean_manage.UserManagePage import UserManagePage
-from page.department_manage.DeptListManagePage import DeptListManagePage
+from page.ai_major.major_manage_page import MajorManagePage
+from page.ai_major.TrainingProgramManage.training_program_manage_page import TrainingProgramManagePage
+from page.cms.cms_user_manage_page import CmsUserManagePage
+from page.dean_manage.admin_class_manage_page import AdminClassManagePage
+from page.dean_manage.course_manage_page import CourseManagePage
+from page.dean_manage.user_manage_page import UserManagePage
+from page.department_manage.dept_list_manage_page import DeptListManagePage
 
 
 class TestDeleteData:

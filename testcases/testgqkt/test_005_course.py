@@ -10,7 +10,7 @@ import pytest
 from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.dean_manage.CourseManagePage import CourseManagePage
+from page.dean_manage.course_manage_page import CourseManagePage
 
 
 class TestCourse:

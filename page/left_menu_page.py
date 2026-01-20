@@ -5,7 +5,7 @@
 # @Desc  : 左侧菜单页面对象类，封装左侧菜单相关的页面操作方法
 from selenium.webdriver.common.by import By
 
-from base.BasePage import BasePage
+from base.base_page import BasePage
 from logs.log import log
 
 

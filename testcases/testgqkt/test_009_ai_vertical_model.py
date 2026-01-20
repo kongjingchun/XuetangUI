@@ -8,10 +8,10 @@ import allure
 import pytest
 
 from common.report_add_img import add_img_2_report
-from page.course_workbench.ai_vertical_model.KnowledgeGraphPage import KnowledgeGraphPage
+from page.course_workbench.ai_vertical_model.knowledge_graph_page import KnowledgeGraphPage
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.teacher_workbench.MyTeachingCoursesPage import MyTeachingCoursesPage
+from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage
 
 
 class TestAiVerticalModel:

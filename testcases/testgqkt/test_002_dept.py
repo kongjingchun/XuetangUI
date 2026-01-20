@@ -10,7 +10,7 @@ import pytest
 from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.department_manage.DeptListManagePage import DeptListManagePage
+from page.department_manage.dept_list_manage_page import DeptListManagePage
 
 
 class TestDept:

@@ -10,8 +10,8 @@ import pytest
 from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
-from page.ai_major.MajorAIModel.MajorAIModelPage import MajorAIModelPage
-from page.ai_major.MajorAIModel.MajorGraphModelPage import MajorGraphModelPage
+from page.ai_major.MajorAIModel.major_ai_model_page import MajorAIModelPage
+from page.ai_major.MajorAIModel.major_graph_model_page import MajorGraphModelPage
 
 
 class TestAIModel:

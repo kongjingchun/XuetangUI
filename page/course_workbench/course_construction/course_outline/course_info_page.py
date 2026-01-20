@@ -6,9 +6,9 @@
 
 from selenium.webdriver.common.by import By
 
-from base.BasePage import BasePage
+from base.base_page import BasePage
 from logs.log import log
-from page.course_workbench.CourseWorkbenchPage import CourseWorkbenchPage
+from page.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class CourseInfoPage(CourseWorkbenchPage, BasePage):

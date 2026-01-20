@@ -7,7 +7,7 @@ from time import sleep
 import requests
 from selenium.webdriver.common.by import By
 
-from base.BasePage import BasePage
+from base.base_page import BasePage
 from common.yaml_config import GetConf
 from logs.log import log
 
