@@ -43,8 +43,13 @@ class QuestionBankPage(CourseResourcePage):
     CREATE_QUESTION_BUTTON = (By.XPATH, "//span[text()='创建']/parent::button")
     # 创建习题成功提示框
     CREATE_QUESTION_SUCCESS_MESSAGE = (By.XPATH, "//p[text()='题目创建成功']")
+    # 导入题库按钮
+    IMPORT_QUESTION_BANK_BUTTON = (By.XPATH, "//button[contains(.,'导入题库')]")
+    # 确认导入按钮
+    CONFIRM_IMPORT_BUTTON = (By.XPATH, "//button[contains(.,'确认导入')]")
+    # 导入题库成功提示框
+    IMPORT_QUESTION_BANK_SUCCESS_MESSAGE = (By.XPATH, "//p[contains(.,'成功导入')]")
     # ==================== 动态定位器方法（需要参数的定位器）====================
-    # 根据题目类型返回新建的下啦选项
 
     def get_new_question_dropdown_option_locator(self, question_type):
         """获取新建题目下拉选项的定位器
@@ -79,7 +84,7 @@ class QuestionBankPage(CourseResourcePage):
         """
         return (By.XPATH, f"//span[text()='" + knowledge_name + "']/parent::div/following-sibling::div/button")
 
-    # ==================== 页面操作方法 ====================
+    # =============================== 页面操作方法 ===============================
     def click_new_question_button(self):
         """点击新建题目按钮"""
         log.info(f"点击新建题目按钮，定位器为：{self.NEW_QUESTION_BUTTON[1]}")
@@ -145,6 +150,21 @@ class QuestionBankPage(CourseResourcePage):
         log.info(f"查看创建习题成功提示框是否出现，定位器为：{self.CREATE_QUESTION_SUCCESS_MESSAGE[1]}")
         return self.is_displayed(self.CREATE_QUESTION_SUCCESS_MESSAGE)
 
+    def click_import_question_bank_button(self):
+        """点击导入题库按钮"""
+        log.info(f"点击导入题库按钮，定位器为：{self.IMPORT_QUESTION_BANK_BUTTON[1]}")
+        return self.click(self.IMPORT_QUESTION_BANK_BUTTON)
+
+    def click_confirm_import_button(self):
+        """点击确认导入按钮"""
+        log.info(f"点击确认导入按钮，定位器为：{self.CONFIRM_IMPORT_BUTTON[1]}")
+        return self.click(self.CONFIRM_IMPORT_BUTTON)
+
+    def is_import_question_bank_success_message_displayed(self):
+        """查看导入题库成功提示框是否出现"""
+        log.info(f"查看导入题库成功提示框是否出现，定位器为：{self.IMPORT_QUESTION_BANK_SUCCESS_MESSAGE[1]}")
+        return self.is_displayed(self.IMPORT_QUESTION_BANK_SUCCESS_MESSAGE)
+
     def new_question(self, question_type, question_content, reference_answer, question_analysis, knowledge_name):
         """新建题目"""
         log.info(f"新建题目：{question_type}，题目内容为：{question_content}，参考答案为：{reference_answer}，题目解析为：{question_analysis}")
@@ -177,6 +197,28 @@ class QuestionBankPage(CourseResourcePage):
         # 断言创建习题成功提示框是否出现
         result = self.is_create_question_success_message_displayed()
         log.info(f"创建习题结果：{result}")
+        # 切出课程资源iframe
+        self.switch_out_iframe()
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    def import_question_bank(self, file_path):
+        """导入题库"""
+        log.info(f"导入题库：{file_path}")
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程资源iframe
+        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 点击导入题库按钮
+        self.click_import_question_bank_button()
+        # 上传题库文件
+        self.upload_file(file_path)
+        # 点击确认导入按钮
+        self.click_confirm_import_button()
+        # 断言导入题库成功提示框是否出现
+        result = self.is_import_question_bank_success_message_displayed()
+        log.info(f"导入题库结果：{result}")
         # 切出课程资源iframe
         self.switch_out_iframe()
         # 切出课程工作台iframe

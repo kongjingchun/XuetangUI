@@ -80,17 +80,10 @@ class CourseResourcePage(CourseWorkbenchPage):
             super().upload_file(self.FILE_INPUT, file_path)
             log.info(f"文件路径已发送到文件输入框：{file_path}")
 
-            # 等待上传完成（等待上传成功提示框出现）
-            result = self.is_displayed(self.UPLOAD_SUCCESS_MESSAGE, timeout=timeout)
-            if result:
-                log.info(f"文件上传成功：{file_path}")
-            else:
-                log.warning(f"文件上传可能失败，未检测到成功提示：{file_path}")
-
-            return result
+            return True
 
         except Exception as e:
-            log.error(f"文件上传失败：{file_path}，错误信息：{str(e)}")
+            log.warning(f"件上传可能失败：{file_path}，错误信息：{str(e)}")
             return False
 
     def upload_file_with_iframe(self, file_path, timeout=30):
@@ -114,8 +107,16 @@ class CourseResourcePage(CourseWorkbenchPage):
 
         try:
             # 执行上传文件操作
-            result = self.upload_file(file_path, timeout=timeout)
+            self.upload_file(file_path, timeout=timeout)
             sleep(1)
+
+            # 等待上传完成（等待上传成功提示框出现）
+            result = self.is_displayed(self.UPLOAD_SUCCESS_MESSAGE, timeout=timeout)
+            if result:
+                log.info(f"文件上传成功：{file_path}")
+            else:
+                log.warning(f"文件上传可能失败，未检测到成功提示：{file_path}")
+
             return result
         finally:
             # 切出课程资源iframe
