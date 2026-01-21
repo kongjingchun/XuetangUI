@@ -43,11 +43,11 @@ XuetangUI/
 │  │  └──my_teaching_courses_page.py  # 我教的课页面
 │  ├──course_workbench/  # 课程工作台页面
 │  │  ├──__init__.py  # 课程工作台页面对象模块初始化文件
-│  │  ├──ai_vertical_model/  # AI垂直模型页面
-│  │  │  ├──__init__.py  # AI垂直模型模块初始化文件
-│  │  │  └──knowledge_graph_page.py  # 知识图谱页面
 │  │  ├──course_construction/  # 课程建设页面
 │  │  │  ├──__init__.py  # 课程建设页面对象模块初始化文件
+│  │  │  ├──ai_vertical_model/  # AI垂直模型页面
+│  │  │  │  ├──__init__.py  # AI垂直模型模块初始化文件
+│  │  │  │  └──knowledge_graph_page.py  # 知识图谱页面
 │  │  │  ├──course_outline/  # 课程大纲页面
 │  │  │  │  ├──__init__.py  # 课程大纲模块初始化文件
 │  │  │  │  ├──course_info_page.py  # 课程信息页面
