@@ -1,56 +1,70 @@
 一、项目结构说明
 #项目根目录结构
 XuetangUI/
+├──.gitignore  # Git忽略文件配置
+├──.python-version  # Python版本配置文件
+├──.vscode/  # VS Code编辑器配置目录
+│  ├──launch.json  # 调试启动配置
+│  └──tasks.json  # 任务配置
+│
 ├──base/  # 基础类目录（PageObject基类）
 │  ├──__init__.py  # 基础类模块初始化文件
-│  └──BasePage.py  # 基础页面类（Page Object Model基类）
+│  └──base_page.py  # 基础页面类（Page Object Model基类）
 │
 ├──page/  # 页面对象目录（PageObject实现类）
 │  ├──__init__.py  # 页面对象模块初始化文件
 │  ├──ai_major/  # AI专业建设系统页面
 │  │  ├──__init__.py  # AI专业建设系统模块初始化文件
-│  │  ├──MajorAIModel/  # AI模型相关页面
+│  │  ├──major_ai_model/  # AI模型相关页面
 │  │  │  ├──__init__.py  # AI模型模块初始化文件
-│  │  │  ├──MajorAIModelPage.py  # AI模型页面
-│  │  │  └──MajorGraphModelPage.py  # 专业图谱模型页面
-│  │  ├──MajorManagePage.py  # 专业管理页面
-│  │  ├──MajorPortalManagePage.py  # 专业门户管理页面
-│  │  ├──TrainingProgramManage/  # 培养方案管理页面
+│  │  │  ├──major_ai_model_page.py  # AI模型页面
+│  │  │  ├──major_graph_model_page.py  # 专业图谱模型页面
+│  │  │  └──major_course_group_graph_page.py  # 专业课程组图谱页面
+│  │  ├──major_manage_page.py  # 专业管理页面
+│  │  ├──major_portal_manage_page.py  # 专业门户管理页面
+│  │  ├──training_program_manage/  # 培养方案管理页面
 │  │  │  ├──__init__.py  # 培养方案管理模块初始化文件
-│  │  │  └──TrainingProgramManagePage.py  # 培养方案管理页面
-│  │  └──TrainingProgramRevisionPage.py  # 培养方案修订页面
+│  │  │  └──training_program_manage_page.py  # 培养方案管理页面
+│  │  └──training_program_revision_page.py  # 培养方案修订页面
 │  ├──cms/  # CMS系统页面
 │  │  ├──__init__.py  # CMS系统模块初始化文件
-│  │  └──CmsUserManagePage.py  # CMS用户管理页面
+│  │  └──cms_user_manage_page.py  # CMS用户管理页面
 │  ├──dean_manage/  # 教务管理页面
 │  │  ├──__init__.py  # 教务管理模块初始化文件
-│  │  ├──UserManagePage.py  # 用户管理页面
-│  │  ├──RoleManagePage.py  # 角色管理页面
-│  │  ├──CourseManagePage.py  # 课程管理页面
-│  │  └──AdminClassManagePage.py  # 行政班管理页面
+│  │  ├──user_manage_page.py  # 用户管理页面
+│  │  ├──role_manage_page.py  # 角色管理页面
+│  │  ├──course_manage_page.py  # 课程管理页面
+│  │  └──admin_class_manage_page.py  # 行政班管理页面
 │  ├──department_manage/  # 院系管理页面
 │  │  ├──__init__.py  # 院系管理模块初始化文件
-│  │  └──DeptListManagePage.py  # 院系列表管理页面
+│  │  └──dept_list_manage_page.py  # 院系列表管理页面
 │  ├──teacher_workbench/  # 教师工作台页面
 │  │  ├──__init__.py  # 教师工作台页面对象模块初始化文件
-│  │  └──MyTeachingCoursesPage.py  # 我教的课页面
+│  │  └──my_teaching_courses_page.py  # 我教的课页面
 │  ├──course_workbench/  # 课程工作台页面
 │  │  ├──__init__.py  # 课程工作台页面对象模块初始化文件
 │  │  ├──ai_vertical_model/  # AI垂直模型页面
 │  │  │  ├──__init__.py  # AI垂直模型模块初始化文件
-│  │  │  └──KnowledgeGraphPage.py  # 知识图谱页面
+│  │  │  └──knowledge_graph_page.py  # 知识图谱页面
 │  │  ├──course_construction/  # 课程建设页面
 │  │  │  ├──__init__.py  # 课程建设页面对象模块初始化文件
-│  │  │  └──course_outline/  # 课程大纲页面
-│  │  │     ├──__init__.py  # 课程大纲模块初始化文件
-│  │  │     ├──CourseInfoPage.py  # 课程信息页面
-│  │  │     └──CourseObjectivePage.py  # 课程目标页面
-│  │  └──CourseWorkbenchPage.py  # 课程工作台页面
+│  │  │  ├──course_outline/  # 课程大纲页面
+│  │  │  │  ├──__init__.py  # 课程大纲模块初始化文件
+│  │  │  │  ├──course_info_page.py  # 课程信息页面
+│  │  │  │  ├──course_objective_page.py  # 课程目标页面
+│  │  │  │  ├──construction_history_page.py  # 建设历程页面
+│  │  │  │  └──course_team_page.py  # 课程团队页面
+│  │  │  └──course_resource/  # 课程资源页面
+│  │  │     ├──__init__.py  # 课程资源模块初始化文件
+│  │  │     ├──course_resource_page.py  # 课程资源页面
+│  │  │     ├──link_page.py  # 链接页面
+│  │  │     └──question_bank_page.py  # 题库页面
+│  │  └──course_workbench_page.py  # 课程工作台页面
 │  ├──login/  # 登录相关页面
 │  │  ├──__init__.py  # 登录模块初始化文件
-│  │  └──LoginPage.py  # 登录页面
-│  ├──LeftMenuPage.py  # 左侧菜单页面
-│  └──TopMenuPage.py  # 顶部菜单页面
+│  │  └──login_page.py  # 登录页面
+│  ├──left_menu_page.py  # 左侧菜单页面
+│  └──top_menu_page.py  # 顶部菜单页面
 │
 ├──testcases/  # 测试用例目录
 │  ├──__init__.py  # 测试用例模块初始化文件
@@ -70,7 +84,8 @@ XuetangUI/
 │  │  ├──test_007_major_portal.py  # 专业门户管理测试用例
 │  │  ├──test_008_ai_model.py  # AI模型测试用例
 │  │  ├──test_009_ai_vertical_model.py  # AI垂直模型测试用例
-│  │  └──test_010_course_outline.py  # 课程大纲测试用例
+│  │  ├──test_010_course_outline.py  # 课程大纲测试用例
+│  │  └──test_011_course_resource.py  # 课程资源测试用例
 │  └──test_999_delete_data.py  # 数据清理测试用例
 │
 ├──common/  # 公共工具目录
@@ -95,6 +110,36 @@ XuetangUI/
 │  ├──chromedriver  # Chrome浏览器驱动（macOS）
 │  ├──chromedriver_linux  # Chrome浏览器驱动（Linux）
 │  └──chromedriver.exe  # Chrome浏览器驱动（Windows）
+│
+├──file/  # 测试文件目录（用于文件上传测试）
+│  ├──test.7z  # 7z压缩文件测试文件
+│  ├──test.bmp  # BMP图片测试文件
+│  ├──test.csv  # CSV表格测试文件
+│  ├──test.doc  # DOC文档测试文件
+│  ├──test.docx  # DOCX文档测试文件
+│  ├──test.dps  # DPS演示文稿测试文件
+│  ├──test.et  # ET电子表格测试文件
+│  ├──test.gif  # GIF图片测试文件
+│  ├──test.jpeg  # JPEG图片测试文件
+│  ├──test.jpg  # JPG图片测试文件
+│  ├──test.key  # Key演示文稿测试文件
+│  ├──test.mp3  # MP3音频测试文件
+│  ├──test.mp4  # MP4视频测试文件
+│  ├──test.numbers  # Numbers电子表格测试文件
+│  ├──test.pages  # Pages文档测试文件
+│  ├──test.pdf  # PDF文档测试文件
+│  ├──test.png  # PNG图片测试文件
+│  ├──test.ppt  # PPT演示文稿测试文件
+│  ├──test.pptx  # PPTX演示文稿测试文件
+│  ├──test.rar  # RAR压缩文件测试文件
+│  ├──test.rtf  # RTF文档测试文件
+│  ├──test.tar  # TAR压缩文件测试文件
+│  ├──test.tif  # TIF图片测试文件
+│  ├──test.txt  # TXT文本测试文件
+│  ├──test.wps  # WPS文档测试文件
+│  ├──test.xls  # XLS电子表格测试文件
+│  ├──test.xlsx  # XLSX电子表格测试文件
+│  └──test.zip  # ZIP压缩文件测试文件
 │
 ├──logs/  # 日志目录
 │  ├──__init__.py  # 日志模块初始化文件

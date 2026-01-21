@@ -11,7 +11,7 @@ from common.report_add_img import add_img_2_report
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from page.ai_major.major_manage_page import MajorManagePage
-from page.ai_major.TrainingProgramManage.training_program_manage_page import TrainingProgramManagePage
+from page.ai_major.training_program_manage.training_program_manage_page import TrainingProgramManagePage
 from page.cms.cms_user_manage_page import CmsUserManagePage
 from page.dean_manage.admin_class_manage_page import AdminClassManagePage
 from page.dean_manage.course_manage_page import CourseManagePage
