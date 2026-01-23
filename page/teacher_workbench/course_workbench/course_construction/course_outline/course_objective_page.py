@@ -7,7 +7,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class CourseObjectivePage(CourseWorkbenchPage):
@@ -20,8 +20,6 @@ class CourseObjectivePage(CourseWorkbenchPage):
         super().__init__(driver)
 
     # ==================== 课程目标定位器=============================================================
-    # 课程目标iframe
-    COURSE_OBJECTIVE_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
 
     # ==================== 课程目标概览定位器=============================================================
     # 编辑描述按钮
@@ -58,8 +56,8 @@ class CourseObjectivePage(CourseWorkbenchPage):
         """编辑课程目标描述"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程目标iframe
-        self.switch_to_iframe(self.COURSE_OBJECTIVE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击编辑描述按钮
         self.click_edit_description_button()
         # 输入课程目标描述
@@ -145,8 +143,8 @@ class CourseObjectivePage(CourseWorkbenchPage):
         """添加目标"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程目标iframe
-        self.switch_to_iframe(self.COURSE_OBJECTIVE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击添加目标按钮
         self.click_add_objective_button()
         # 输入目标标题
@@ -202,8 +200,8 @@ class CourseObjectivePage(CourseWorkbenchPage):
         """关联毕业要求"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程目标iframe
-        self.switch_to_iframe(self.COURSE_OBJECTIVE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击关联毕业要求按钮
         self.click_associate_graduation_requirements_button()
         # 点击添加毕业要求按钮

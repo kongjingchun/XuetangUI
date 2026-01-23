@@ -81,7 +81,7 @@ class AdminClassManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[text()='" + dept_name + "']/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[text()='{dept_name}']/parent::li")
 
     def get_new_admin_class_major_dropdown_option_locator(self, major_name):
         """获取所属专业下拉框选项的定位器
@@ -92,7 +92,7 @@ class AdminClassManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[text()='" + major_name + "']/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[text()='{major_name}']/parent::li")
 
     def get_new_admin_class_grade_dropdown_option_locator(self, grade):
         """获取年级下拉框选项的定位器
@@ -103,7 +103,7 @@ class AdminClassManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[text()='" + grade + "']/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[text()='{grade}']/parent::li")
 
     def get_operation_button_by_admin_class_name_locator(self, admin_class_name):
         """获取根据行政班名称定位操作按钮的定位器
@@ -114,7 +114,7 @@ class AdminClassManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[.//td[contains(.,'" + admin_class_name + "')]]//button")
+        return (By.XPATH, f"//tr[.//td[contains(.,'{admin_class_name}')]]//button")
 
     # ==================== 页面操作方法 ====================
 

@@ -1,6 +1,4 @@
 {
   "failed_testcases": [],
-  "success_testcases": [
-    "\n测试课程资源流程\n\nArgs:\n    driver: WebDriver实例（通过pytest fixture注入）\n\nReturns:\n    None\n"
-  ]
+  "success_testcases": []
 }

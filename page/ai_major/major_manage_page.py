@@ -77,7 +77,7 @@ class MajorManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[text()='" + dept_name + "']/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[text()='{dept_name}']/parent::li")
 
     def get_new_major_belong_prof_dropdown_option_locator(self, prof_name):
         """获取专业负责人下拉框选项的定位器
@@ -88,7 +88,7 @@ class MajorManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//span[text()='" + prof_name + "']/parent::li")
+        return (By.XPATH, f"//span[text()='{prof_name}']/parent::li")
 
     def get_new_major_build_level_radio_locator(self, level="国家一流本科专业"):
         """获取建设层次单选框的定位器
@@ -117,7 +117,7 @@ class MajorManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//span[text()='" + feature + "']/preceding-sibling::span")
+        return (By.XPATH, f"//span[text()='{feature}']/preceding-sibling::span")
 
     def get_edit_button_hover_location_locator(self, major_name):
         """获取编辑悬停位置定位器（根据专业名称）
@@ -128,7 +128,7 @@ class MajorManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + major_name + "')]//i[contains(@class,'action-icon')]")
+        return (By.XPATH, f"//tr[contains(.,'{major_name}')]//i[contains(@class,'action-icon')]")
 
     def get_edit_button_by_major_name_locator(self, major_name):
         """获取编辑按钮定位器（根据专业名称）
@@ -139,7 +139,7 @@ class MajorManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + major_name + "')]//button")
+        return (By.XPATH, f"//tr[contains(.,'{major_name}')]//button")
 
     # ==================== 页面操作方法 ====================
 

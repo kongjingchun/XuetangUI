@@ -8,13 +8,13 @@ import allure
 import pytest
 
 from common.report_add_img import add_img_2_report
-from page.course_workbench.course_construction.course_outline.course_team_page import CourseTeamPage
+from page.teacher_workbench.course_workbench.course_construction.course_outline.course_team_page import CourseTeamPage
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage
-from page.course_workbench.course_construction.course_outline.course_info_page import CourseInfoPage
-from page.course_workbench.course_construction.course_outline.course_objective_page import CourseObjectivePage
-from page.course_workbench.course_construction.course_outline.construction_history_page import ConstructionHistoryPage
+from page.teacher_workbench.course_workbench.course_construction.course_outline.course_info_page import CourseInfoPage
+from page.teacher_workbench.course_workbench.course_construction.course_outline.course_objective_page import CourseObjectivePage
+from page.teacher_workbench.course_workbench.course_construction.course_outline.construction_history_page import ConstructionHistoryPage
 
 
 class TestCourseOutline:

@@ -62,7 +62,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//li[contains(.,'" + role_name + "')]")
+        return (By.XPATH, f"//li[contains(.,'{role_name}')]")
 
     def get_create_user_input_locator(self, input_name):
         """获取创建用户输入框的定位器
@@ -73,7 +73,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[contains(@aria-label,'创建')]//input[contains(@placeholder,'" + input_name + "')]")
+        return (By.XPATH, f"//div[contains(@aria-label,'创建')]//input[contains(@placeholder,'{input_name}')]")
 
     def get_search_input_locator(self, input_name):
         """获取搜索输入框的定位器
@@ -84,7 +84,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//input[contains(@placeholder,'" + input_name + "')]")
+        return (By.XPATH, f"//input[contains(@placeholder,'{input_name}')]")
 
     def get_user_bind_button_locator(self, user_code):
         """获取用户绑定按钮的定位器
@@ -95,7 +95,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + user_code + "')]//button[contains(.,'绑定')]")
+        return (By.XPATH, f"//tr[contains(.,'{user_code}')]//button[contains(.,'绑定')]")
 
     def get_edit_button_by_code_locator(self, code):
         """获取根据工号定位编辑按钮的定位器
@@ -106,7 +106,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[.//td[contains(.,'" + code + "')]]//button[contains(.,'编辑')]")
+        return (By.XPATH, f"//tr[.//td[contains(.,'{code}')]]//button[contains(.,'编辑')]")
 
     # 新建用户根据角色返回学院下拉框
     def get_new_user_dept_dropdown_locator(self, role_name):
@@ -118,7 +118,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[contains(@aria-label,'" + role_name + "')]//span[text()='请选择学院']")
+        return (By.XPATH, f"//div[contains(@aria-label,'{role_name}')]//span[text()='请选择学院']")
 
     # 新建用户根据院系返回学院下拉框选项
     def get_new_user_dept_dropdown_option_locator(self, dept_name):
@@ -130,7 +130,7 @@ class UserManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "(//li/span[text()='" + dept_name + "'])[2]")
+        return (By.XPATH, f"(//li/span[text()='{dept_name}'])[2]")
 
     # ==================== 页面操作方法 ====================
 

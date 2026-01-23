@@ -6,7 +6,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
+from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
 
 
 class QuestionBankPage(CourseResourcePage):
@@ -60,7 +60,7 @@ class QuestionBankPage(CourseResourcePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//li[text()='" + question_type + "']")
+        return (By.XPATH, f"//li[text()='{question_type}']")
 
     def get_knowledge_locator_by_name(self, knowledge_name):
         """根据知识点名称返回知识点定位器
@@ -71,7 +71,7 @@ class QuestionBankPage(CourseResourcePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//span[text()='" + knowledge_name + "']/parent::div")
+        return (By.XPATH, f"//span[text()='{knowledge_name}']/parent::div")
 
     def get_select_knowledge_locator_by_name(self, knowledge_name):
         """根据知识点名称返回选择关联知识点定位器
@@ -82,7 +82,7 @@ class QuestionBankPage(CourseResourcePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, f"//span[text()='" + knowledge_name + "']/parent::div/following-sibling::div/button")
+        return (By.XPATH, f"//span[text()='{knowledge_name}']/parent::div/following-sibling::div/button")
 
     # =============================== 页面操作方法 ===============================
     def click_new_question_button(self):
@@ -170,8 +170,8 @@ class QuestionBankPage(CourseResourcePage):
         log.info(f"新建题目：{question_type}，题目内容为：{question_content}，参考答案为：{reference_answer}，题目解析为：{question_analysis}")
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程资源iframe
-        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击新建题目按钮
         self.click_new_question_button()
         # 点击新建题目下拉选项
@@ -208,8 +208,8 @@ class QuestionBankPage(CourseResourcePage):
         log.info(f"导入题库：{file_path}")
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程资源iframe
-        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击导入题库按钮
         self.click_import_question_bank_button()
         # 上传题库文件

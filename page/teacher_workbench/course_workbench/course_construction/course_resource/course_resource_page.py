@@ -7,7 +7,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class CourseResourcePage(CourseWorkbenchPage):
@@ -31,8 +31,6 @@ class CourseResourcePage(CourseWorkbenchPage):
         super().__init__(driver)
 
     # ==================== 元素定位器（静态定位器）====================
-    # 课程资源通用iframe（子类可以重写此定位器）
-    COURSE_RESOURCE_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
     # 上传文件按钮
     UPLOAD_FILE_BUTTON = (By.XPATH, "(//button[contains(.,'上传文件')])[1]")
     # 文件输入框（隐藏的input[type="file"]元素，点击上传按钮后出现）
@@ -102,8 +100,8 @@ class CourseResourcePage(CourseWorkbenchPage):
 
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程资源iframe
-        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
 
         try:
             # 执行上传文件操作

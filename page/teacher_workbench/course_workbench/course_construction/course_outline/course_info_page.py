@@ -7,7 +7,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class CourseInfoPage(CourseWorkbenchPage):
@@ -20,8 +20,6 @@ class CourseInfoPage(CourseWorkbenchPage):
     def __init__(self, driver):
         super().__init__(driver)
     # ==================== 课程信息页面定位器=============================================================
-    # 课程信息iframe
-    COURSE_INFO_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
     # 编辑按钮
     EDIT_BUTTON = (By.XPATH, "//span[contains(.,'编辑')]/parent::button")
     # 课程英文名称输入框
@@ -70,8 +68,8 @@ class CourseInfoPage(CourseWorkbenchPage):
         """编辑课程信息"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程信息iframe
-        self.switch_to_iframe(self.COURSE_INFO_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击编辑按钮
         self.click_edit_button()
         # 输入课程英文名称

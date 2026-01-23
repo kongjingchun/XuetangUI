@@ -40,26 +40,32 @@ XuetangUI/
 │  │  └──dept_list_manage_page.py  # 院系列表管理页面
 │  ├──teacher_workbench/  # 教师工作台页面
 │  │  ├──__init__.py  # 教师工作台页面对象模块初始化文件
-│  │  └──my_teaching_courses_page.py  # 我教的课页面
-│  ├──course_workbench/  # 课程工作台页面
-│  │  ├──__init__.py  # 课程工作台页面对象模块初始化文件
-│  │  ├──course_construction/  # 课程建设页面
-│  │  │  ├──__init__.py  # 课程建设页面对象模块初始化文件
-│  │  │  ├──ai_vertical_model/  # AI垂直模型页面
-│  │  │  │  ├──__init__.py  # AI垂直模型模块初始化文件
-│  │  │  │  └──knowledge_graph_page.py  # 知识图谱页面
-│  │  │  ├──course_outline/  # 课程大纲页面
-│  │  │  │  ├──__init__.py  # 课程大纲模块初始化文件
-│  │  │  │  ├──course_info_page.py  # 课程信息页面
-│  │  │  │  ├──course_objective_page.py  # 课程目标页面
-│  │  │  │  ├──construction_history_page.py  # 建设历程页面
-│  │  │  │  └──course_team_page.py  # 课程团队页面
-│  │  │  └──course_resource/  # 课程资源页面
-│  │  │     ├──__init__.py  # 课程资源模块初始化文件
-│  │  │     ├──course_resource_page.py  # 课程资源页面
-│  │  │     ├──link_page.py  # 链接页面
-│  │  │     └──question_bank_page.py  # 题库页面
-│  │  └──course_workbench_page.py  # 课程工作台页面
+│  │  ├──my_teaching_courses_page.py  # 我教的课页面
+│  │  └──course_workbench/  # 课程工作台页面
+│  │     ├──__init__.py  # 课程工作台页面对象模块初始化文件
+│  │     ├──course_workbench_page.py  # 课程工作台页面
+│  │     ├──course_construction/  # 课程建设页面
+│  │     │  ├──__init__.py  # 课程建设页面对象模块初始化文件
+│  │     │  ├──ai_vertical_model/  # AI垂直模型页面
+│  │     │  │  ├──__init__.py  # AI垂直模型模块初始化文件
+│  │     │  │  └──knowledge_graph_page.py  # 知识图谱页面
+│  │     │  ├──course_outline/  # 课程大纲页面
+│  │     │  │  ├──__init__.py  # 课程大纲模块初始化文件
+│  │     │  │  ├──course_info_page.py  # 课程信息页面
+│  │     │  │  ├──course_objective_page.py  # 课程目标页面
+│  │     │  │  ├──construction_history_page.py  # 建设历程页面
+│  │     │  │  └──course_team_page.py  # 课程团队页面
+│  │     │  └──course_resource/  # 课程资源页面
+│  │     │     ├──__init__.py  # 课程资源模块初始化文件
+│  │     │     ├──course_resource_page.py  # 课程资源页面
+│  │     │     ├──exam_page.py  # 试卷页面
+│  │     │     ├──homework_page.py  # 作业页面
+│  │     │     ├──link_page.py  # 链接页面
+│  │     │     ├──overview_page.py  # 概览页面
+│  │     │     └──question_bank_page.py  # 题库页面
+│  │     └──course_teaching/  # 课程教学页面
+│  │        ├──__init__.py  # 课程教学模块初始化文件
+│  │        └──teaching_class_management_page.py  # 教学班管理页面
 │  ├──login/  # 登录相关页面
 │  │  ├──__init__.py  # 登录模块初始化文件
 │  │  └──login_page.py  # 登录页面

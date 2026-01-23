@@ -28,6 +28,8 @@ class CourseWorkbenchPage(BasePage):
     # ==================== 元素定位器（静态定位器）====================
     # 课程工作台iframe
     COURSE_WORKBENCH_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-4002']")
+    # 课程工作空间iframe（课程建设模块通用iframe）
+    COURSE_WORKSPACE_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
 
     # ==================== 元素定位器（动态定位器）====================
     # 根据名称获取左侧菜单的定位器

@@ -102,6 +102,11 @@ main_graph:
   节点1.1: Auto节点1.1
   节点1.1描述: 节点1.1描述
 
+teach_class:
+  教学班名称: Auto_teach_class{suffix}
+  教学班编号: Auto_teach_class_code{suffix}
+  教学班描述: Auto_teach_class_desc{suffix}
+
 
 
 mysql:

@@ -5,7 +5,7 @@
 # @Desc  : 试卷页面对象类，封装试卷相关的页面操作方法
 from selenium.webdriver.common.by import By
 from logs.log import log
-from page.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
+from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
 
 
 class ExamPage(CourseResourcePage):
@@ -97,8 +97,8 @@ class ExamPage(CourseResourcePage):
         log.info(f"新建试卷：{exam_title}")
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程资源iframe
-        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击新建试卷按钮
         self.click_new_exam_button()
         # 输入试卷标题

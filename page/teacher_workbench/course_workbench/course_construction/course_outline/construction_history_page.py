@@ -7,7 +7,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class ConstructionHistoryPage(CourseWorkbenchPage):
@@ -20,8 +20,6 @@ class ConstructionHistoryPage(CourseWorkbenchPage):
     def __init__(self, driver):
         super().__init__(driver)
     # ==================== 建设历程定位器=============================================================
-    # 建设历程iframe
-    CONSTRUCTION_HISTORY_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
     # 编辑按钮
     EDIT_BUTTON = (By.XPATH, "//span[text()=' 编辑']/parent::button")
     # 建设时间输入框
@@ -78,8 +76,8 @@ class ConstructionHistoryPage(CourseWorkbenchPage):
         """编辑建设历程"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到建设历程iframe
-        self.switch_to_iframe(self.CONSTRUCTION_HISTORY_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击编辑按钮
         self.click_edit_button()
         # 输入建设时间

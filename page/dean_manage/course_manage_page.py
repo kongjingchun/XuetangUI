@@ -81,7 +81,7 @@ class CourseManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[contains(.,'" + dept_name + "')]/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[contains(.,'{dept_name}')]/parent::li")
 
     def get_new_course_responsible_person_dropdown_option_locator(self, prof_name):
         """获取课程负责人下拉框选项的定位器
@@ -92,7 +92,7 @@ class CourseManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//span[text()='" + prof_name + "']/parent::div")
+        return (By.XPATH, f"//span[text()='{prof_name}']/parent::div")
 
     def get_edit_button_hover_location_locator(self, course_code):
         """获取编辑悬停位置的定位器
@@ -103,7 +103,7 @@ class CourseManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + course_code + "')]//i[contains(@class,'action-icon')]")
+        return (By.XPATH, f"//tr[contains(.,'{course_code}')]//i[contains(@class,'action-icon')]")
 
     def get_edit_button_by_course_code_locator(self, course_code):
         """获取根据课程代码定位编辑按钮的定位器
@@ -114,7 +114,7 @@ class CourseManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + course_code + "')]//button")
+        return (By.XPATH, f"//tr[contains(.,'{course_code}')]//button")
 
     # ==================== 页面操作方法 ====================
 

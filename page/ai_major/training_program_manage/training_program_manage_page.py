@@ -97,7 +97,7 @@ class TrainingProgramManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[contains(.,'" + option_name + "')]/parent::li")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[contains(.,'{option_name}')]/parent::li")
 
     def get_revision_button_locator(self, program_name):
         """获取修订按钮的定位器
@@ -108,7 +108,7 @@ class TrainingProgramManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[.//td[contains(.,'" + program_name + "')]]//button[contains(.,'修订')]")
+        return (By.XPATH, f"//tr[.//td[contains(.,'{program_name}')]]//button[contains(.,'修订')]")
 
     def get_more_button_locator(self, program_name):
         """获取更多按钮的定位器
@@ -119,7 +119,7 @@ class TrainingProgramManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[.//td[contains(.,'" + program_name + "')]]//button[contains(.,'更多')]")
+        return (By.XPATH, f"//tr[.//td[contains(.,'{program_name}')]]//button[contains(.,'更多')]")
 
     # ==================== 页面操作方法 ====================
 

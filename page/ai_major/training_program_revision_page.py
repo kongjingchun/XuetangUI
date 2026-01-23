@@ -70,7 +70,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//span[text()='" + tab_name + "']/parent::div")
+        return (By.XPATH, f"//span[text()='{tab_name}']/parent::div")
 
     def get_save_success_alert_locator(self, content="保存成功"):
         """获取保存成功提示框的定位器
@@ -81,7 +81,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//p[contains(.,'" + content + "')]")
+        return (By.XPATH, f"//p[contains(.,'{content}')]")
 
     def get_indicator_point_name_input_locator(self, indicator_index=1):
         """获取指标点名称输入框的定位器
@@ -92,7 +92,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//input[@placeholder='指标点名称']")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//input[@placeholder='指标点名称']")
 
     def get_indicator_point_description_textarea_locator(self, indicator_index=1):
         """获取指标点描述文本域的定位器
@@ -103,7 +103,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//textarea[contains(@placeholder,'指标点')]")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//textarea[contains(@placeholder,'指标点')]")
 
     def get_expand_button_locator(self, indicator_index=1):
         """获取展开按钮的定位器
@@ -114,7 +114,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//button[contains(.,'展开')]")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//button[contains(.,'展开')]")
 
     def get_add_decomposed_indicator_point_button_locator(self, indicator_index=1):
         """获取添加分解指标点按钮的定位器
@@ -125,7 +125,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//button[contains(.,'添加分解指标点')]")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//button[contains(.,'添加分解指标点')]")
 
     def get_decomposed_indicator_point_name_input_locator(self, indicator_index=1, decomposed_index=1):
         """获取分解指标点名称输入框的定位器
@@ -137,7 +137,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//div[@class='sub-requirements-list']/div[" + str(decomposed_index) + "]//input[@placeholder='分解指标点名称']")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//div[@class='sub-requirements-list']/div[{decomposed_index}]//input[@placeholder='分解指标点名称']")
 
     def get_decomposed_indicator_point_description_textarea_locator(self, indicator_index=1, decomposed_index=1):
         """获取分解指标点描述文本域的定位器
@@ -149,7 +149,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class = 'requirements-list']/div[" + str(indicator_index) + "]//div[@class='sub-requirements-list']/div[" + str(decomposed_index) + "]//textarea[contains(@placeholder,'分解指标点')]")
+        return (By.XPATH, f"//div[@class = 'requirements-list']/div[{indicator_index}]//div[@class='sub-requirements-list']/div[{decomposed_index}]//textarea[contains(@placeholder,'分解指标点')]")
 
     def get_target_support_select_button_locator(self, index=1):
         """获取目标支撑选择按钮的定位器
@@ -160,7 +160,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "(//span[text()='选择'])[" + str(index) + "]")
+        return (By.XPATH, f"(//span[text()='选择'])[{index}]")
 
     def get_target_support_level_option_locator(self, level="高支撑"):
         """获取目标支撑等级选项的定位器
@@ -171,7 +171,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-hidden='false']//span[contains(.,'" + level + "')]")
+        return (By.XPATH, f"//div[@aria-hidden='false']//span[contains(.,'{level}')]")
 
     def get_add_course_button_locator(self):
         """获取添加课程按钮的定位器
@@ -198,7 +198,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-label='选择课程']//tr[contains(.,'" + course_name + "')]//span[@class='el-checkbox__inner']")
+        return (By.XPATH, f"//div[@aria-label='选择课程']//tr[contains(.,'{course_name}')]//span[@class='el-checkbox__inner']")
 
     def get_confirm_add_course_button_locator(self):
         """获取确认添加课程按钮的定位器
@@ -217,7 +217,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "(//button[contains(.,'关联课程')])[" + str(index) + "]")
+        return (By.XPATH, f"(//button[contains(.,'关联课程')])[{index}]")
 
     def get_course_support_checkbox_by_name_locator(self, course_name):
         """获取课程支撑页面根据课程名称定位复选框的定位器
@@ -228,7 +228,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@aria-label='课程管理']//tr[contains(.,'" + course_name + "')]//span[@class='el-checkbox__inner']")
+        return (By.XPATH, f"//div[@aria-label='课程管理']//tr[contains(.,'{course_name}')]//span[@class='el-checkbox__inner']")
 
     def get_course_support_level_option_locator(self, index=1, level="H"):
         """获取课程支撑等级选项的定位器
@@ -240,7 +240,7 @@ class TrainingProgramRevisionPage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//div[@class='requirements-tree']/div[" + str(index) + "]//span[contains(.,'" + level + "')]")
+        return (By.XPATH, f"//div[@class='requirements-tree']/div[{index}]//span[contains(.,'{level}')]")
 
     # ==================== 页面操作方法 ====================
 

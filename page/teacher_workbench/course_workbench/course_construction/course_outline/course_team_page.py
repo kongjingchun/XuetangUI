@@ -7,7 +7,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 
 
 class CourseTeamPage(CourseWorkbenchPage):
@@ -21,8 +21,6 @@ class CourseTeamPage(CourseWorkbenchPage):
         super().__init__(driver)
 
     # ==================== 课程团队定位器=============================================================
-    # 课程团队iframe
-    COURSE_TEAM_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
     # 课程负责人编辑按钮（退出编辑）
     COURSE_LEADER_EDIT_BUTTON = (By.XPATH, "//div[@class='section' and contains(.,'课程负责人')]//button")
     # 添加负责人按钮
@@ -54,7 +52,7 @@ class CourseTeamPage(CourseWorkbenchPage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, f"//tr[contains(.,'" + search_text + "')]//span[text()=' 添加 ']/parent::button")
+        return (By.XPATH, f"//tr[contains(.,'{search_text}')]//span[text()=' 添加 ']/parent::button")
 
     # ==================== 课程团队操作方法=============================================================
     def click_course_leader_edit_button(self):
@@ -93,8 +91,8 @@ class CourseTeamPage(CourseWorkbenchPage):
         """添加课程负责人"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程团队iframe
-        self.switch_to_iframe(self.COURSE_TEAM_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击课程负责人编辑按钮
         self.click_course_leader_edit_button()
         # 点击添加负责人按钮

@@ -8,7 +8,7 @@ import allure
 import pytest
 
 from common.report_add_img import add_img_2_report
-from page.course_workbench.course_construction.ai_vertical_model.knowledge_graph_page import KnowledgeGraphPage
+from page.teacher_workbench.course_workbench.course_construction.ai_vertical_model.knowledge_graph_page import KnowledgeGraphPage
 from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage

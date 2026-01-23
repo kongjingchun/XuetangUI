@@ -7,7 +7,7 @@
 from selenium.webdriver.common.by import By
 
 from base.base_page import BasePage
-from page.course_workbench.course_workbench_page import CourseWorkbenchPage
+from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 from logs.log import log
 
 
@@ -27,8 +27,6 @@ class KnowledgeGraphPage(CourseWorkbenchPage, BasePage):
         super().__init__(driver)
 
     # ==================== 知识图谱页面定位器=============================================================
-    # 知识图谱iframe
-    KNOWLEDGE_GRAPH_IFRAME = (By.XPATH, "//iframe[@id='course-workspace-iframe']")
     # 新建主图谱button
     CREATE_MAIN_GRAPH_BUTTON = (By.XPATH, "//button[./span[contains(.,'新建主图谱')]]")
 
@@ -64,8 +62,8 @@ class KnowledgeGraphPage(CourseWorkbenchPage, BasePage):
         """
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到知识图谱iframe
-        self.switch_to_iframe(self.KNOWLEDGE_GRAPH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 根据图谱名称点击编辑数据按钮
         locator = self.get_edit_data_button_locator_by_name(graph_name)
         log.info(f"根据图谱名称点击编辑数据按钮，定位器为：{locator[1]}")
@@ -169,8 +167,8 @@ class KnowledgeGraphPage(CourseWorkbenchPage, BasePage):
         """
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到知识图谱iframe
-        self.switch_to_iframe(self.KNOWLEDGE_GRAPH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击新建主图谱按钮
         self.click_create_main_graph_button()
         # 输入新建主图谱名称
@@ -290,8 +288,8 @@ class KnowledgeGraphPage(CourseWorkbenchPage, BasePage):
         """
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到知识图谱iframe
-        self.switch_to_iframe(self.KNOWLEDGE_GRAPH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击添加数据按钮
         self.click_add_data_button()
         # 输入节点标题
@@ -344,8 +342,8 @@ class KnowledgeGraphPage(CourseWorkbenchPage, BasePage):
         """
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到知识图谱iframe
-        self.switch_to_iframe(self.KNOWLEDGE_GRAPH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 鼠标悬停到节点名称
         self.hover_node_by_name(node_name)
         # 点击子级按钮

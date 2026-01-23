@@ -47,7 +47,7 @@ class RoleManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tbody//tr[contains(.,'" + role_name + "')]//span[contains(.,'分配')]/parent::button")
+        return (By.XPATH, f"//tbody//tr[contains(.,'{role_name}')]//span[contains(.,'分配')]/parent::button")
 
     def get_user_checkbox_locator(self, user_name):
         """获取用户复选框的定位器
@@ -58,7 +58,7 @@ class RoleManagePage(BasePage):
         Returns:
             tuple: 定位器元组 (By.XPATH, xpath)
         """
-        return (By.XPATH, "//tr[contains(.,'" + user_name + "')]//span[@class='el-checkbox__inner']")
+        return (By.XPATH, f"//tr[contains(.,'{user_name}')]//span[@class='el-checkbox__inner']")
 
     # ==================== 页面操作方法 ====================
 

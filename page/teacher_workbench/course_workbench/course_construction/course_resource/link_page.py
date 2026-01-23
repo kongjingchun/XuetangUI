@@ -6,7 +6,7 @@
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
+from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
 
 
 class LinkPage(CourseResourcePage):
@@ -64,8 +64,8 @@ class LinkPage(CourseResourcePage):
         """新建链接"""
         # 切换到课程工作台iframe
         self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程资源iframe
-        self.switch_to_iframe(self.COURSE_RESOURCE_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 点击新建链接按钮
         self.click_new_link_button()
         # 输入链接地址
