@@ -4,6 +4,7 @@
 # @Date  : 2026/01/17
 # @Desc  : 课程团队页面对象类，封装课程团队相关的页面操作方法
 
+from time import sleep
 from selenium.webdriver.common.by import By
 
 from logs.log import log
@@ -68,6 +69,7 @@ class CourseTeamPage(CourseWorkbenchPage):
     def input_add_course_leader_search_input(self, search_text):
         """输入添加负责人搜索框"""
         log.info(f"输入添加负责人搜索框，定位器为：{self.ADD_COURSE_LEADER_SEARCH_INPUT[1]}")
+        sleep(1)
         return self.input_text(self.ADD_COURSE_LEADER_SEARCH_INPUT, search_text)
 
     def click_add_course_leader_button_by_search_text(self, search_text):
