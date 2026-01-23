@@ -64,5 +64,7 @@ Desktop.ini
 *.bak
 *.cache
 
-
 logs/failed_testcases.json
+
+# VS Code
+settings.json
