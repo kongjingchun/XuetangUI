@@ -63,7 +63,3 @@ Desktop.ini
 *.tmp
 *.bak
 *.cache
-
-
-logs/failed_testcases.json
-.vscode/settings.json
