@@ -68,10 +68,24 @@ class TestCourseContent:
             result = course_content_page.click_manage_learning_unit_button()
             add_img_2_report(driver, "点击管理学习单元")
             assert result is True, "点击管理学习单元失败"
-
+        
         with allure.step("创建视频学习单元"):
             learning_unit_title = f"视频单元_{course_info['课程名称']}"
             learning_unit_content = f"这是{course_info['课程名称']}的视频学习单元内容"
-            result = course_content_page.new_video_learning_unit(learning_unit_title, learning_unit_content)
+            result = course_content_page.new_video_learning_unit(learning_unit_title, learning_unit_content,count_grade=True)
             add_img_2_report(driver, "创建视频学习单元")
             assert result is True, "创建视频学习单元失败"
+
+        with allure.step("创建资料学习单元"):
+            learning_unit_title = f"资料单元_{course_info['课程名称']}"
+            learning_unit_content = f"这是{course_info['课程名称']}的资料学习单元内容"
+            result = course_content_page.new_material_learning_unit(learning_unit_title, learning_unit_content,count_grade=True)
+            add_img_2_report(driver, "创建资料学习单元")
+            assert result is True, "创建资料学习单元失败"
+            
+        with allure.step("创建课件学习单元"):
+            learning_unit_title = f"课件单元_{course_info['课程名称']}"
+            learning_unit_content = f"这是{course_info['课程名称']}的课件学习单元内容"
+            result = course_content_page.new_ppt_learning_unit(learning_unit_title, learning_unit_content,count_grade=True)
+            add_img_2_report(driver, "创建课件学习单元")
+            assert result is True, "创建课件学习单元失败"

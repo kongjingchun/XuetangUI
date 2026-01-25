@@ -37,6 +37,7 @@ class CourseContentPage(CourseWorkbenchPage):
     CONFIRM_CREATE_SUB_CHAPTER_BUTTON = (By.XPATH, "//div[@aria-label='添加子章节']//button[./span[text()=' 创建 ']]")
 
     # ====================操作方法=================================
+
     def click_create_chapter_button(self):
         """点击创建章节按钮
 
@@ -66,6 +67,29 @@ class CourseContentPage(CourseWorkbenchPage):
         """
         log.info(f"点击确认创建章节按钮，定位器为：{self.CONFIRM_CREATE_CHAPTER_BUTTON[1]}")
         return self.click(self.CONFIRM_CREATE_CHAPTER_BUTTON)
+
+    def get_add_sub_chapter_button_locator(self, chapter_name):
+        """根据章节名称返回新增子章节的按钮
+
+        Args:
+            chapter_name: 章节名称
+
+        Returns:
+            tuple: 定位器元组 (By.XPATH, xpath)
+        """
+        return (By.XPATH, f"//div[contains(@class,'el-tree-node') and contains(.,'{chapter_name}')]/div/div/div/button[contains(.,'子章节')]")
+
+    def get_add_learning_unit_button_locator(self, chapter_name):
+        """根据章节名称返回添加学习单元的按钮
+
+        Args:
+            chapter_name: 章节名称
+
+        Returns:
+            tuple: 定位器元组 (By.XPATH, xpath)
+        """
+        # 假设页面结构：某章节div下“添加学习单元”按钮有特定文本
+        return (By.XPATH, f"//div[contains(@class,'el-tree-node') and contains(.,'{chapter_name}')]/div/div/div/button[contains(.,'学习单元')]")
 
     def click_add_sub_chapter_button_by_chapter(self, chapter_name):
         """根据章节名称点击子章节创建按钮
@@ -234,7 +258,7 @@ class CourseContentPage(CourseWorkbenchPage):
         log.info(f"查看新建学习单元创建成功提示框是否出现，定位器为：{self.NEW_LEARNING_UNIT_CREATE_SUCCESS_ALERT[1]}")
         return self.is_displayed(self.NEW_LEARNING_UNIT_CREATE_SUCCESS_ALERT)
 
-    def create_learning_unit(self, learning_unit_type, learning_unit_title, learning_unit_content, count_grade=True):
+    def create_learning_unit(self, learning_unit_type, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
         """创建学习单元
 
         Args:
@@ -242,6 +266,7 @@ class CourseContentPage(CourseWorkbenchPage):
             learning_unit_title: 学习单元标题
             learning_unit_content: 学习单元正文
             count_grade: 是否计入成绩
+            allow_comment: 是否允许评论
 
         Returns:
             创建学习单元结果
@@ -254,6 +279,9 @@ class CourseContentPage(CourseWorkbenchPage):
         self.input_learning_unit_title(learning_unit_title)
         # 输入学习单元正文
         self.input_learning_unit_content(learning_unit_content)
+        # 是否允许评论，默认开启
+        if not allow_comment:
+            self.click_allow_comment_switch()
         # 点击是否计入成绩开关
         if count_grade:
             self.click_count_grade_switch()
@@ -262,7 +290,7 @@ class CourseContentPage(CourseWorkbenchPage):
      # 选择视频文件按钮
     SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择视频文件')]")
     # 选择第一个视频文件按钮
-    SELECT_FIRST_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]")
+    SELECT_FIRST_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div")
     # 确认选择视频文件按钮
     CONFIRM_SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
 
@@ -317,33 +345,95 @@ class CourseContentPage(CourseWorkbenchPage):
         self.switch_out_iframe()
         return result
 
-    def get_add_sub_chapter_button_locator(self, chapter_name):
-        """根据章节名称返回新增子章节的按钮
-
-        Args:
-            chapter_name: 章节名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
-        return (By.XPATH, f"//div[contains(@class,'el-tree-node') and contains(.,'{chapter_name}')]/div/div/div/button[contains(.,'子章节')]")
-
-    def get_add_learning_unit_button_locator(self, chapter_name):
-        """根据章节名称返回添加学习单元的按钮
-
-        Args:
-            chapter_name: 章节名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
-        # 假设页面结构：某章节div下“添加学习单元”按钮有特定文本
-        return (By.XPATH, f"//div[contains(@class,'el-tree-node') and contains(.,'{chapter_name}')]/div/div/div/button[contains(.,'学习单元')]")
     # ====================新建资料学习单元定位器=================================
     # 选择资料文件按钮
     SELECT_MATERIAL_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择资料文件')]")
     # 选择第一个资料文件按钮
-    SELECT_FIRST_MATERIAL_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]")
+    SELECT_FIRST_MATERIAL_FILE_BUTTON = (By.XPATH, "//div[contains(@aria-label,'选择文件')]//tr[1]/td[1]/div/label")
     # 确认选择资料文件按钮
-    CONFIRM_SELECT_MATERIAL_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
+    CONFIRM_SELECT_MATERIAL_FILE_BUTTON = (By.XPATH, "//div[contains(@aria-label,'选择文件')]//button[./span[text()='确定']]")
     # ====================新建资料学习单元操作方法=================================
+
+    def click_select_material_file_button(self):
+        """点击选择资料文件按钮"""
+        log.info(f"点击选择资料文件按钮，定位器为：{self.SELECT_MATERIAL_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_MATERIAL_FILE_BUTTON)
+
+    def click_select_first_material_file_button(self):
+        """点击选择第一个资料文件按钮"""
+        log.info(f"点击选择第一个资料文件按钮，定位器为：{self.SELECT_FIRST_MATERIAL_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_MATERIAL_FILE_BUTTON)
+
+    def click_confirm_select_material_file_button(self):
+        """点击确认选择资料文件按钮"""
+        log.info(f"点击确认选择资料文件按钮，定位器为：{self.CONFIRM_SELECT_MATERIAL_FILE_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_MATERIAL_FILE_BUTTON)
+
+    def new_material_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建资料学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建资料学习单元
+        self.create_learning_unit("资料", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 选择资料文件
+        self.click_select_material_file_button()
+        # 点击选择第一个资料文件按钮
+        self.click_select_first_material_file_button()
+        # 点击确认选择资料文件按钮
+        self.click_confirm_select_material_file_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建资料学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+    # ====================新建课件学习单元定位器=================================
+    # 选择课件文件按钮
+    SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择课件文件')]")
+    # 选择第一个课件文件按钮
+    SELECT_FIRST_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div")
+    # 确认选择课件文件按钮
+    CONFIRM_SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
+    # ====================新建课件学习单元操作方法=================================
+
+    def click_select_ppt_file_button(self):
+        """点击选择课件文件按钮"""
+        log.info(f"点击选择课件文件按钮，定位器为：{self.SELECT_VIDEO_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_VIDEO_FILE_BUTTON)
+
+    def click_select_first_ppt_file_button(self):
+        """点击选择第一个课件文件按钮"""
+        log.info(f"点击选择第一个课件文件按钮，定位器为：{self.SELECT_FIRST_VIDEO_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_VIDEO_FILE_BUTTON)
+
+    def click_confirm_select_ppt_file_button(self):
+        """点击确认选择课件文件按钮"""
+        log.info(f"点击确认选择课件文件按钮，定位器为：{self.CONFIRM_SELECT_VIDEO_FILE_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_VIDEO_FILE_BUTTON)
+
+    def new_ppt_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建课件学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建课件学习单元
+        self.create_learning_unit("课件", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 选择课件文件
+        self.click_select_ppt_file_button()
+        # 点击选择第一个课件文件按钮
+        self.click_select_first_ppt_file_button()
+        # 点击确认选择课件文件按钮
+        self.click_confirm_select_ppt_file_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建课件学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
