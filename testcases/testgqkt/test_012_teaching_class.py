@@ -1,8 +1,8 @@
 # encoding: utf-8
-# @File  : test_012_teaching.py
+# @File  : test_012_teaching_class.py
 # @Author: 孔敬淳
 # @Date  : 2025/01/23
-# @Desc  : 课程教学测试用例，符合Selenium官方Page Object Model和pytest框架规范
+# @Desc  : 教学班管理测试用例，符合Selenium官方Page Object Model和pytest框架规范
 
 import allure
 import pytest
@@ -16,8 +16,8 @@ from page.teacher_workbench.course_workbench.course_workbench_page import Course
 from page.teacher_workbench.course_workbench.course_teaching.teaching_class_management_page import TeachingClassManagementPage
 
 
-class TestTeaching:
-    """课程教学测试类
+class TestTeachingClass:
+    """教学班管理测试类
 
     测试用例按照Selenium官方Page Object Model规范编写：
     1. 页面对象在测试用例中创建，driver通过pytest fixture注入
@@ -26,7 +26,7 @@ class TestTeaching:
     """
 
     @pytest.mark.run(order=300)
-    @allure.story("测试课程教学")
+    @allure.story("测试教学班管理")
     def test_001_create_teaching_class(self, driver):
         """
         测试创建教学班流程
