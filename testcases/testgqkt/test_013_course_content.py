@@ -159,3 +159,8 @@ class TestCourseContent:
             result = course_content_page.copy_new_version_from_default(new_version_name)
             add_img_2_report(driver, "从默认版本复制新版本")
             assert result is True, "从默认版本复制新版本失败"
+
+        with allure.step("根据章节名称关联第一个知识点"):
+            result = course_content_page.relate_first_knowledge_by_chapter(chapter_title)
+            add_img_2_report(driver, "根据章节名称关联第一个知识点")
+            assert result is True, "根据章节名称关联第一个知识点失败"

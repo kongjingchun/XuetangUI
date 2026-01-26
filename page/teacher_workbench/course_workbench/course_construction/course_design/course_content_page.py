@@ -59,6 +59,12 @@ class CourseContentPage(CourseWorkbenchPage):
     CONFIRM_COPY_BUTTON = (By.XPATH, "//div[@aria-label='从其他版本复制']//button[contains(.,'确定')]")
     # 复制版本成功提示框
     COPY_VERSION_SUCCESS_ALERT = (By.XPATH, "//p[contains(.,'复制版本成功')]")
+    # 知识点第一个复选框
+    FIRST_KNOWLEDGE_CHECKBOX = (By.XPATH, "(//div[@aria-label='选择知识点']//label/span)[1]")
+    # 选择知识点确定按钮
+    CONFIRM_SELECT_KNOWLEDGE_BUTTON = (By.XPATH, "//div[@aria-label='选择知识点']//button[contains(.,'确定')]")
+    #成功添加知识点提示框
+    SUCCESS_ADD_KNOWLEDGE_ALERT = (By.XPATH, "//p[contains(.,'成功')]")
     # ===================元素定位器（动态定位器）====================
 
     def get_add_learning_unit_button_locator_by_chapter(self, chapter_title):
@@ -72,6 +78,18 @@ class CourseContentPage(CourseWorkbenchPage):
             tuple: (By.XPATH, xpath字符串)
         """
         return (By.XPATH, f"//div[./div/span[text()='{chapter_title}']]//button[contains(.,'学习单元')]")
+    def get_knowledge_graph_button_locator_by_chapter(self, chapter_title):
+        """
+        根据章节名称返回对应章节的“知识图谱”按钮定位器
+
+        Args:
+            chapter_title (str): 章节名称
+
+        Returns:
+            tuple: (By.XPATH, xpath字符串)
+        """
+        return (By.XPATH, f"//div[./div/span[text()='{chapter_title}']]//button[contains(.,'知识图谱')]")
+     
     # ====================操作方法=================================
 
     def click_create_chapter_button(self):
@@ -395,6 +413,70 @@ class CourseContentPage(CourseWorkbenchPage):
         self.switch_out_iframe()
         return result
 
+    def click_add_knowledge_button_by_chapter(self, chapter_title):
+        """根据章节名称点击增加知识点按钮
+
+        Args:
+            chapter_title (str): 章节名称
+        """
+        return self.click(self.get_knowledge_graph_button_locator_by_chapter(chapter_title))
+    
+    def click_first_knowledge_checkbox(self):
+        """
+        点击第一个知识点的复选框
+
+        Returns:
+            bool: 点击操作结果
+        """
+        log.info(f"点击第一个知识点的复选框，定位器为：{self.FIRST_KNOWLEDGE_CHECKBOX[1]}")
+        return self.click(self.FIRST_KNOWLEDGE_CHECKBOX)
+
+    def click_confirm_select_knowledge_button(self):
+        """
+        点击选择知识点确定按钮
+
+        Returns:
+            bool: 点击操作结果
+        """
+        return self.click(self.CONFIRM_SELECT_KNOWLEDGE_BUTTON)
+
+    def is_success_add_knowledge_alert_display(self):
+        """
+        判断成功添加知识点提示框是否出现
+
+        Returns:
+            bool: 提示框是否出现
+        """
+        return self.is_displayed(self.SUCCESS_ADD_KNOWLEDGE_ALERT)
+
+    def relate_first_knowledge_by_chapter(self, chapter_title):
+        """
+        根据章节名称关联第一个知识点
+
+        Args:
+            chapter_title (str): 章节名称
+
+        Returns:
+            bool: 操作是否成功
+        """
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 点击本章节下“增加知识点”按钮
+        self.click_add_knowledge_button_by_chapter(chapter_title)
+        # 点击第一个知识点的复选框
+        self.click_first_knowledge_checkbox()
+        # 点击“确定”按钮
+        self.click_confirm_select_knowledge_button()
+        # 判断成功添加知识点提示框是否出现
+        result = self.is_success_add_knowledge_alert_display()
+        log.info(f"章节 [{chapter_title}] 关联第一个知识点结果: {result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+        
     # ==================== 新建学习单元定位器====================
     # 管理学习单元按钮
     MANAGE_LEARNING_UNIT_BUTTON = (By.XPATH, "//button[contains(.,'管理学习单元')]")
@@ -430,7 +512,7 @@ class CourseContentPage(CourseWorkbenchPage):
             tuple: 定位器元组 (By.XPATH, xpath)
         """
         return (By.XPATH, f"//li[text()='{learning_unit_type}']")
-
+    
  # ====================创建学习单元通用操作方法=================================
 
     def click_manage_learning_unit_button(self):
@@ -573,8 +655,9 @@ class CourseContentPage(CourseWorkbenchPage):
         # 点击是否计入成绩开关
         if count_grade:
             self.click_count_grade_switch()
+        return True
 
-     # ====================新建视频学习单元定位器=================================
+    # ====================新建视频学习单元定位器=================================
      # 选择视频文件按钮
     SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择视频文件')]")
     # 选择第一个视频文件按钮

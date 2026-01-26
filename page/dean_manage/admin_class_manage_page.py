@@ -295,7 +295,7 @@ class AdminClassManagePage(BasePage):
         log.info(f"判断删除成功提示框是否出现，定位器为：{self.DELETE_SUCCESS_ALERT[1]}")
         return self.is_displayed(self.DELETE_SUCCESS_ALERT)
 
-    def create_admin_class(self, admin_class_info=None):
+    def create_admin_class(self, admin_class_info):
         """创建行政班
 
         Args:
