@@ -25,7 +25,7 @@ class TestTeachingClass:
     3. 断言在测试用例中，不在页面对象中
     """
 
-    @pytest.mark.run(order=300)
+    @pytest.mark.run(order=240)
     @allure.story("测试教学班管理")
     def test_001_create_teaching_class(self, driver):
         """

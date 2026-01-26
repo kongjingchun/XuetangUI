@@ -270,7 +270,7 @@ class BasePage:
         locate_type, locator_expression = locator
         return self.driver.find_elements(locate_type, locator_expression)
 
-    def wait_for_element_to_disappear(self, locator, timeout=10):
+    def is_disappear(self, locator, timeout=10):
         """
         等待元素消失（优化：减少等待时间）
 

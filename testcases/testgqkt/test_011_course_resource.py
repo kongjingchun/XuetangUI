@@ -30,7 +30,7 @@ class TestCourseResource:
     3. 断言在测试用例中，不在页面对象中
     """
 
-    @pytest.mark.run(order=290)
+    @pytest.mark.run(order=230)
     @allure.story("测试课程资源")
     def test_001_upload_course_resource_file(self, driver):
         """

@@ -244,7 +244,7 @@ class TestUser:
             add_img_2_report(driver, "专业管理员分配教师角色")
             assert result is True, "专业管理员分配教师角色失败"
 
-    @pytest.mark.run(order=240)
+    @pytest.mark.run(order=215)
     @allure.story("创建教师")
     def test_005_create_teacher(self, driver):
         """
@@ -262,8 +262,6 @@ class TestUser:
         initial_admin = GetConf().get_user_info("initial_admin")
         # 创建的教师信息
         teacher_user_info = GetConf().get_user_info("teacher")
-        # 创建的CMS教师信息
-        teacher_cms_user_info = GetConf().get_user_info("teacher_cms")
         # 使用TestContextHelper封装公共操作
         helper = TestContextHelper(driver)
 
@@ -283,7 +281,7 @@ class TestUser:
             assert result is True, "创建教师失败"
 
     @pytest.mark.skip_local  # 本地部署环境下跳过
-    @pytest.mark.run(order=250)
+    @pytest.mark.run(order=216)
     @allure.story("绑定教师")
     def test_006_bind_teacher(self, driver):
         """
@@ -336,7 +334,7 @@ class TestUser:
             assert result is True, "教师绑定失败"
 
     @pytest.mark.skip_internet  # 网络部署环境下跳过
-    @pytest.mark.run(order=260)
+    @pytest.mark.run(order=217)
     @allure.story("初始化教师密码")
     def test_007_init_teacher_password(self, driver):
         """

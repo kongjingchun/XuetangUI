@@ -31,11 +31,47 @@ class CourseContentPage(CourseWorkbenchPage):
     CHAPTER_TITLE_INPUT = (By.XPATH, "//div[@aria-label='创建章节']//input[@placeholder='请输入章节标题']")
     # 章节确认创建按钮
     CONFIRM_CREATE_CHAPTER_BUTTON = (By.XPATH, "//div[@aria-label='创建章节']//button[./span[text()=' 创建 ']]")
+    # 创建章节成功提示框
+    CREATE_CHAPTER_SUCCESS_ALERT = (By.XPATH, "//p[text()='创建章节成功']")
     # 子章节标题输入框
     SUB_CHAPTER_TITLE_INPUT = (By.XPATH, "//div[@aria-label='添加子章节']//input[@placeholder='请输入子章节标题']")
     # 子章节确认创建按钮
     CONFIRM_CREATE_SUB_CHAPTER_BUTTON = (By.XPATH, "//div[@aria-label='添加子章节']//button[./span[text()=' 创建 ']]")
+    # 创建子章节成功提示框
+    CREATE_SUB_CHAPTER_SUCCESS_ALERT = (By.XPATH, "//p[text()='创建子章节成功']")
+    # 添加学习单元全选复选框
+    ADD_LEARNING_UNIT_ALL_SELECT_CHECKBOX = (By.XPATH, "//tr[contains(.,'标题') and contains(.,'创建时间')]/th[1]//label")
+    # 选择学习单元确定按钮
+    CONFIRM_SELECT_LEARNING_UNIT_BUTTON = (By.XPATH, "//div[@aria-label='选择学习单元']//button[contains(.,'确定')]")
+    # 学习单元添加成功提示框
+    LEARNING_UNIT_ADD_SUCCESS_ALERT = (By.XPATH, "//p[contains(.,'成功')]")
+    # 版本管理按钮
+    VERSION_MANAGEMENT_BUTTON = (By.XPATH, "//button[contains(.,'版本管理')]")
+    # 从其他版本复制按钮
+    COPY_FROM_OTHER_VERSION_BUTTON = (By.XPATH, "//li[contains(.,'从其他版本复制')]")
+    # 版本选择下拉框
+    VERSION_SELECT_DROPDOWN = (By.XPATH, "//div[@aria-label='从其他版本复制']//div[./span[text()='请选择要复制的版本']]")
+    # 默认版本下拉框选项
+    DEFAULT_VERSION_DROPDOWN_OPTION = (By.XPATH, "//div[@aria-hidden='false']//li[contains(.,'默认版本')]")
+    # 新版本名称输入框
+    NEW_VERSION_NAME_INPUT = (By.XPATH, "//div[@aria-label='从其他版本复制']//input[@placeholder='请输入新版本名称']")
+    # 确定复制按钮
+    CONFIRM_COPY_BUTTON = (By.XPATH, "//div[@aria-label='从其他版本复制']//button[contains(.,'确定')]")
+    # 复制版本成功提示框
+    COPY_VERSION_SUCCESS_ALERT = (By.XPATH, "//p[contains(.,'复制版本成功')]")
+    # ===================元素定位器（动态定位器）====================
 
+    def get_add_learning_unit_button_locator_by_chapter(self, chapter_title):
+        """
+        根据章节名称返回对应章节的“+增加学习单元”按钮定位器
+
+        Args:
+            chapter_title (str): 章节名称
+
+        Returns:
+            tuple: (By.XPATH, xpath字符串)
+        """
+        return (By.XPATH, f"//div[./div/span[text()='{chapter_title}']]//button[contains(.,'学习单元')]")
     # ====================操作方法=================================
 
     def click_create_chapter_button(self):
@@ -67,6 +103,34 @@ class CourseContentPage(CourseWorkbenchPage):
         """
         log.info(f"点击确认创建章节按钮，定位器为：{self.CONFIRM_CREATE_CHAPTER_BUTTON[1]}")
         return self.click(self.CONFIRM_CREATE_CHAPTER_BUTTON)
+
+    def is_create_chapter_success_alert_display(self):
+        """查看创建章节成功提示框是否出现
+
+        Returns:
+            bool: True表示创建章节成功提示框出现，False表示未出现
+        """
+        log.info(f"查看创建章节成功提示框是否出现，定位器为：{self.CREATE_CHAPTER_SUCCESS_ALERT[1]}")
+        return self.is_displayed(self.CREATE_CHAPTER_SUCCESS_ALERT)
+
+    def new_chapter(self, chapter_title):
+        """新建章节"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 点击创建章节按钮
+        self.click_create_chapter_button()
+        # 输入章节标题
+        self.input_chapter_title(chapter_title)
+        # 点击确认创建章节按钮
+        self.click_confirm_create_chapter_button()
+        # 断言创建章节成功提示框是否出现
+        result = self.is_create_chapter_success_alert_display()
+        log.info(f"新建章节结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
 
     def get_add_sub_chapter_button_locator(self, chapter_name):
         """根据章节名称返回新增子章节的按钮
@@ -125,13 +189,221 @@ class CourseContentPage(CourseWorkbenchPage):
         log.info(f"点击确认创建子章节按钮，定位器为：{self.CONFIRM_CREATE_SUB_CHAPTER_BUTTON[1]}")
         return self.click(self.CONFIRM_CREATE_SUB_CHAPTER_BUTTON)
 
+    def is_create_sub_chapter_success_alert_display(self):
+        """查看创建子章节成功提示框是否出现
+
+        Returns:
+            bool: True表示创建子章节成功提示框出现，False表示未出现
+        """
+        log.info(f"查看创建子章节成功提示框是否出现，定位器为：{self.CREATE_SUB_CHAPTER_SUCCESS_ALERT[1]}")
+        return self.is_displayed(self.CREATE_SUB_CHAPTER_SUCCESS_ALERT)
+
+    def new_sub_chapter_in_chapter(self, chapter_name, sub_chapter_title):
+        """在章节中新增子章节"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 点击新增子章节按钮
+        self.click_add_sub_chapter_button_by_chapter(chapter_name)
+        # 输入子章节标题
+        self.input_sub_chapter_title(sub_chapter_title)
+        # 点击确认创建子章节按钮
+        self.click_confirm_create_sub_chapter_button()
+        # 断言创建子章节成功提示框是否出现
+        result = self.is_create_sub_chapter_success_alert_display()
+        log.info(f"在章节中新增子章节结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    def click_add_learning_unit_button_by_chapter(self, chapter_name):
+        """
+        根据章节名称，点击添加学习单元按钮
+
+        Args:
+            chapter_name (str): 章节名称
+
+        Returns:
+            点击操作结果
+        """
+        chapter_add_learning_unit_button = self.get_add_learning_unit_button_locator_by_chapter(chapter_name)
+        log.info(f"点击章节「{chapter_name}」下的添加学习单元按钮，定位器为：{chapter_add_learning_unit_button[1]}")
+        return self.click(chapter_add_learning_unit_button)
+
+    def click_add_learning_unit_all_select_button(self):
+        """点击学习单元全选复选框
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击学习单元全选复选框，定位器为：{self.ADD_LEARNING_UNIT_ALL_SELECT_CHECKBOX[1]}")
+        return self.click(self.ADD_LEARNING_UNIT_ALL_SELECT_CHECKBOX)
+
+    def click_confirm_select_learning_unit_button(self):
+        """点击选择学习单元确定按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择学习单元确定按钮，定位器为：{self.CONFIRM_SELECT_LEARNING_UNIT_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_LEARNING_UNIT_BUTTON)
+
+    def is_learning_unit_add_success_alert_display(self):
+        """判断学习单元添加成功提示框是否出现
+
+        Returns:
+            bool: True表示学习单元添加成功提示框出现，False表示未出现
+        """
+        log.info(f"判断学习单元添加成功提示框是否出现，定位器为：{self.LEARNING_UNIT_ADD_SUCCESS_ALERT[1]}")
+        return self.is_displayed(self.LEARNING_UNIT_ADD_SUCCESS_ALERT)
+
+    def is_learning_unit_add_success_alert_disappear(self, timeout=5):
+        """
+        判断学习单元添加成功提示框是否消失
+
+        Args:
+            timeout (int): 等待提示框消失的超时时间，单位为秒，默认5秒
+
+        Returns:
+            bool: True表示提示框已消失，False表示未消失
+        """
+        log.info(f"判断学习单元添加成功提示框是否消失，定位器为：{self.LEARNING_UNIT_ADD_SUCCESS_ALERT[1]}")
+        return self.is_disappear(self.LEARNING_UNIT_ADD_SUCCESS_ALERT, timeout=timeout)
+
+    def add_learning_unit_by_chapter(self, chapter_name):
+        """
+        给指定章节批量添加学习单元
+
+        Args:
+            chapter_name (str): 章节名称
+
+        Returns:
+            bool: True表示添加成功，False表示失败或未出现提示
+        """
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 点击章节下添加学习单元按钮
+        self.click_add_learning_unit_button_by_chapter(chapter_name)
+        # 勾选全选复选框
+        self.click_add_learning_unit_all_select_button()
+        # 点击确定
+        self.click_confirm_select_learning_unit_button()
+        # 检查是否出现添加成功提示框
+        result = self.is_learning_unit_add_success_alert_display()
+        log.info(f"章节「{chapter_name}」添加学习单元结果：{result}")
+        self.is_learning_unit_add_success_alert_disappear(timeout=7)
+        # 切出iframe
+        self.switch_out_iframe()
+        return result
+
+    def click_version_management_button(self):
+        """点击版本管理按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击版本管理按钮，定位器为：{self.VERSION_MANAGEMENT_BUTTON[1]}")
+        return self.click(self.VERSION_MANAGEMENT_BUTTON)
+
+    def click_copy_from_other_version_button(self):
+        """点击从其他版本复制按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击从其他版本复制按钮，定位器为：{self.COPY_FROM_OTHER_VERSION_BUTTON[1]}")
+        return self.click(self.COPY_FROM_OTHER_VERSION_BUTTON)
+
+    def click_version_select_dropdown(self):
+        """点击版本选择下拉框
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击版本选择下拉框，定位器为：{self.VERSION_SELECT_DROPDOWN[1]}")
+        return self.click(self.VERSION_SELECT_DROPDOWN)
+
+    def click_default_version_dropdown_option(self):
+        """点击默认版本下拉框选项
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击默认版本下拉框选项，定位器为：{self.DEFAULT_VERSION_DROPDOWN_OPTION[1]}")
+        return self.click(self.DEFAULT_VERSION_DROPDOWN_OPTION)
+
+    def input_new_version_name(self, new_version_name):
+        """输入新版本名称
+
+        Args:
+            new_version_name (str): 新版本名称
+        """
+        log.info(f"输入新版本名称：{new_version_name}，定位器为：{self.NEW_VERSION_NAME_INPUT[1]}")
+        return self.input_text(self.NEW_VERSION_NAME_INPUT, new_version_name)
+
+    def click_confirm_copy_button(self):
+        """点击确定复制按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击确定复制按钮，定位器为：{self.CONFIRM_COPY_BUTTON[1]}")
+        return self.click(self.CONFIRM_COPY_BUTTON)
+
+    def is_copy_version_success_alert_display(self):
+        """判断复制版本成功提示框是否出现
+
+        Returns:
+            bool: True表示复制版本成功提示框出现，False表示未出现
+        """
+        log.info(f"判断复制版本成功提示框是否出现，定位器为：{self.COPY_VERSION_SUCCESS_ALERT[1]}")
+        return self.is_displayed(self.COPY_VERSION_SUCCESS_ALERT)
+
+    def copy_new_version_from_default(self, new_version_name):
+        """
+        从默认版本复制新版本
+
+        Args:
+            new_version_name (str): 新版本的名称
+
+        Returns:
+            bool: True - 复制成功; False - 复制失败
+        """
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 点击版本管理按钮
+        self.click_version_management_button()
+        # 点击从其他版本复制按钮
+        self.click_copy_from_other_version_button()
+        # 点击版本选择下拉框
+        self.click_version_select_dropdown()
+        # 选择默认版本
+        self.click_default_version_dropdown_option()
+        # 输入新版本名称
+        self.input_new_version_name(new_version_name)
+        # 点击确定复制按钮
+        self.click_confirm_copy_button()
+        # 判断复制版本成功提示框是否出现
+        result = self.is_copy_version_success_alert_display()
+        log.info(f"从默认版本复制新版本结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
     # ==================== 新建学习单元定位器====================
     # 管理学习单元按钮
     MANAGE_LEARNING_UNIT_BUTTON = (By.XPATH, "//button[contains(.,'管理学习单元')]")
+    # 退出管理学习单元的返回按钮
+    EXIT_MANAGE_LEARNING_UNIT_BUTTON = (By.XPATH, "//button[./span[text()=' 返回 ']]")
     # 创建学习单元按钮
     CREATE_LEARNING_UNIT_BUTTON = (By.XPATH, "//button[contains(.,'创建学习单元')]")
     # 学习单元创建标题输入框
-    LEARNING_UNIT_TITLE_INPUT = (By.XPATH, "//input[contains(@placeholder,'请输入') and contains(@placeholder,'标题')]")
+    LEARNING_UNIT_TITLE_INPUT = (By.XPATH, "//div[./label[contains(.,'学习单元标题')]]//input")
     # 学习单元正文富文本输入框
     LEARNING_UNIT_CONTENT_INPUT = (By.XPATH, "//div[@contenteditable='true']")
     # 是否允许评论按钮
@@ -173,6 +445,22 @@ class CourseContentPage(CourseWorkbenchPage):
         self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         log.info(f"点击管理学习单元按钮，定位器为：{self.MANAGE_LEARNING_UNIT_BUTTON[1]}")
         result = self.click(self.MANAGE_LEARNING_UNIT_BUTTON)
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    def click_exit_manage_learning_unit_button(self):
+        """点击退出管理学习单元按钮
+
+        Returns:
+            点击操作结果
+        """
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        log.info(f"点击退出管理学习单元按钮，定位器为：{self.EXIT_MANAGE_LEARNING_UNIT_BUTTON[1]}")
+        result = self.click(self.EXIT_MANAGE_LEARNING_UNIT_BUTTON)
         # 切出课程工作台iframe
         self.switch_out_iframe()
         return result
@@ -330,7 +618,7 @@ class CourseContentPage(CourseWorkbenchPage):
         self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
         # 新建视频学习单元
         self.create_learning_unit("视频", learning_unit_title, learning_unit_content, count_grade)
-        # 选择视频文件
+        # 点击选择视频文件
         self.click_select_video_file_button()
         # 点击选择第一个视频文件按钮
         self.click_select_first_video_file_button()
@@ -393,27 +681,27 @@ class CourseContentPage(CourseWorkbenchPage):
         return result
     # ====================新建课件学习单元定位器=================================
     # 选择课件文件按钮
-    SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择课件文件')]")
+    SELECT_PPT_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择课件文件')]")
     # 选择第一个课件文件按钮
-    SELECT_FIRST_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div")
+    SELECT_FIRST_PPT_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div")
     # 确认选择课件文件按钮
-    CONFIRM_SELECT_VIDEO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
+    CONFIRM_SELECT_PPT_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
     # ====================新建课件学习单元操作方法=================================
 
     def click_select_ppt_file_button(self):
         """点击选择课件文件按钮"""
-        log.info(f"点击选择课件文件按钮，定位器为：{self.SELECT_VIDEO_FILE_BUTTON[1]}")
-        return self.click(self.SELECT_VIDEO_FILE_BUTTON)
+        log.info(f"点击选择课件文件按钮，定位器为：{self.SELECT_PPT_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_PPT_FILE_BUTTON)
 
     def click_select_first_ppt_file_button(self):
         """点击选择第一个课件文件按钮"""
-        log.info(f"点击选择第一个课件文件按钮，定位器为：{self.SELECT_FIRST_VIDEO_FILE_BUTTON[1]}")
-        return self.click(self.SELECT_FIRST_VIDEO_FILE_BUTTON)
+        log.info(f"点击选择第一个课件文件按钮，定位器为：{self.SELECT_FIRST_PPT_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_PPT_FILE_BUTTON)
 
     def click_confirm_select_ppt_file_button(self):
         """点击确认选择课件文件按钮"""
-        log.info(f"点击确认选择课件文件按钮，定位器为：{self.CONFIRM_SELECT_VIDEO_FILE_BUTTON[1]}")
-        return self.click(self.CONFIRM_SELECT_VIDEO_FILE_BUTTON)
+        log.info(f"点击确认选择课件文件按钮，定位器为：{self.CONFIRM_SELECT_PPT_FILE_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_PPT_FILE_BUTTON)
 
     def new_ppt_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
         """新建课件学习单元"""
@@ -434,6 +722,295 @@ class CourseContentPage(CourseWorkbenchPage):
         # 断言新建学习单元创建成功提示框是否出现
         result = self.is_new_learning_unit_create_success_alert_displayed()
         log.info(f"新建课件学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    # ====================新建讨论学习单元定位器=================================
+    # 是否匿名评论开关
+    ANONYMOUS_COMMENT_SWITCH = (By.XPATH, "//div[./label[text()='是否匿名评论']]//span[2]")
+    # ====================新建讨论学习单元操作方法=================================
+
+    def click_anonymous_comment_switch(self, anonymous_comment=False):
+        """点击是否匿名评论开关
+
+        Args:
+            anonymous_comment: 是否匿名评论，默认不匿名
+
+        Returns:
+            点击操作结果
+        """
+        if anonymous_comment:
+            log.info(f"点击是否匿名评论开关，定位器为：{self.ANONYMOUS_COMMENT_SWITCH[1]}")
+            return self.click(self.ANONYMOUS_COMMENT_SWITCH)
+
+    def new_discussion_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True, anonymous_comment=False):
+        """新建讨论学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建讨论学习单元
+        self.create_learning_unit("讨论", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击是否匿名评论开关
+        self.click_anonymous_comment_switch(anonymous_comment)
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建讨论学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+    # ====================新建作业学习单元定位器=================================
+    # 选择作业文件按钮
+    SELECT_HOMEWORK_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择作业')]")
+    # 选择第一个作业按钮
+    SELECT_FIRST_HOMEWORK_BUTTON = (By.XPATH, "//div[@aria-label='选择作业']//tr[1]/td[1]/div/label")
+    # 确认选择作业按钮
+    CONFIRM_SELECT_HOMEWORK_BUTTON = (By.XPATH, "//div[@aria-label='选择作业']//button[./span[contains(.,'确定选择')]]")
+    # ====================新建作业学习单元操作方法=================================
+
+    def click_select_homework_file_button(self):
+        """点击选择作业文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择作业按钮，定位器为：{self.SELECT_HOMEWORK_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_HOMEWORK_FILE_BUTTON)
+
+    def click_select_first_homework_button(self):
+        """点击选择第一个作业按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择第一个作业按钮，定位器为：{self.SELECT_FIRST_HOMEWORK_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_HOMEWORK_BUTTON)
+
+    def click_confirm_select_homework_button(self):
+        """点击确认选择作业按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击确认选择作业按钮，定位器为：{self.CONFIRM_SELECT_HOMEWORK_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_HOMEWORK_BUTTON)
+
+    def new_homework_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建作业学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建作业学习单元
+        self.create_learning_unit("作业", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击选择作业文件按钮
+        self.click_select_homework_file_button()
+        # 点击选择第一个作业按钮
+        self.click_select_first_homework_button()
+        # 点击确认选择作业按钮
+        self.click_confirm_select_homework_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建作业学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+    # ====================新建考试学习单元定位器=================================
+    # 选择考试文件按钮
+    SELECT_EXAM_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择试卷')]")
+    # 选择第一个考试按钮
+    SELECT_FIRST_EXAM_BUTTON = (By.XPATH, "//div[@aria-label='选择试卷']//tr[1]/td[1]/div/label")
+    # 确认选择考试按钮
+    CONFIRM_SELECT_EXAM_BUTTON = (By.XPATH, "//div[@aria-label='选择试卷']//button[./span[contains(.,'确定选择')]]")
+    # ====================新建考试学习单元操作方法=================================
+
+    def click_select_exam_file_button(self):
+        """点击选择考试文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择考试文件按钮，定位器为：{self.SELECT_EXAM_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_EXAM_FILE_BUTTON)
+
+    def click_select_first_exam_button(self):
+        """点击选择第一个考试按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择第一个考试按钮，定位器为：{self.SELECT_FIRST_EXAM_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_EXAM_BUTTON)
+
+    def click_confirm_select_exam_button(self):
+        """点击确认选择考试按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击确认选择考试按钮，定位器为：{self.CONFIRM_SELECT_EXAM_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_EXAM_BUTTON)
+
+    def new_exam_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建考试学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建考试学习单元
+        self.create_learning_unit("考试", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击选择考试文件按钮
+        self.click_select_exam_file_button()
+        # 点击选择第一个考试按钮
+        self.click_select_first_exam_button()
+        # 点击确认选择考试按钮
+        self.click_confirm_select_exam_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建考试学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+     # ====================新建链接学习单元定位器=================================
+     # 选择链接文件按钮
+    SELECT_LINK_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择链接')]")
+    # 选择第一个链接文件按钮
+    SELECT_FIRST_LINK_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div")
+    # 确认选择链接文件按钮
+    CONFIRM_SELECT_LINK_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
+
+    # ====================新建链接学习单元操作方法=================================
+    def click_select_link_file_button(self):
+        """点击选择链接文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择链接文件按钮，定位器为：{self.SELECT_LINK_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_LINK_FILE_BUTTON)
+
+    def click_select_first_link_file_button(self):
+        """点击选择第一个链接文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择第一个链接文件按钮，定位器为：{self.SELECT_FIRST_LINK_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_LINK_FILE_BUTTON)
+
+    def click_confirm_select_link_file_button(self):
+        """点击确认选择链接文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击确认选择链接文件按钮，定位器为：{self.CONFIRM_SELECT_LINK_FILE_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_LINK_FILE_BUTTON)
+
+    def new_link_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建链接学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建链接学习单元
+        self.create_learning_unit("链接", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击选择链接文件按钮
+        self.click_select_link_file_button()
+        # 点击选择第一个链接文件按钮
+        self.click_select_first_link_file_button()
+        # 点击确认选择链接文件按钮
+        self.click_confirm_select_link_file_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建链接学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    # ====================新建音频学习单元定位器=================================
+    # 选择音频文件按钮
+    SELECT_AUDIO_FILE_BUTTON = (By.XPATH, "//button[contains(.,'请选择音频文件')]")
+    # 选择第一个音频文件按钮
+    SELECT_FIRST_AUDIO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//tr[1]/td[1]/div/label")
+    # 确认选择音频文件按钮
+    CONFIRM_SELECT_AUDIO_FILE_BUTTON = (By.XPATH, "//div[@aria-label='选择文件']//button[./span[text()='确定']]")
+
+    # ====================新建音频学习单元操作方法=================================
+    def click_select_audio_file_button(self):
+        """点击选择音频文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择音频文件按钮，定位器为：{self.SELECT_AUDIO_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_AUDIO_FILE_BUTTON)
+
+    def click_select_first_audio_file_button(self):
+        """点击选择第一个音频文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击选择第一个音频文件按钮，定位器为：{self.SELECT_FIRST_AUDIO_FILE_BUTTON[1]}")
+        return self.click(self.SELECT_FIRST_AUDIO_FILE_BUTTON)
+
+    def click_confirm_select_audio_file_button(self):
+        """点击确认选择音频文件按钮
+
+        Returns:
+            点击操作结果
+        """
+        log.info(f"点击确认选择音频文件按钮，定位器为：{self.CONFIRM_SELECT_AUDIO_FILE_BUTTON[1]}")
+        return self.click(self.CONFIRM_SELECT_AUDIO_FILE_BUTTON)
+
+    def new_audio_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建音频学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建音频学习单元
+        self.create_learning_unit("音频", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击选择音频文件按钮
+        self.click_select_audio_file_button()
+        # 点击选择第一个音频文件按钮
+        self.click_select_first_audio_file_button()
+        # 点击确认选择音频文件按钮
+        self.click_confirm_select_audio_file_button()
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建音频学习单元结果：{result}")
+        # 切出课程工作台iframe
+        self.switch_out_iframe()
+        return result
+
+    # ====================新建课堂学习单元操作方法=================================
+    def new_classroom_learning_unit(self, learning_unit_title, learning_unit_content, count_grade=False, allow_comment=True):
+        """新建课堂学习单元"""
+        # 切换到课程工作台iframe
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
+        # 切换到课程工作空间iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
+        # 新建课堂学习单元
+        self.create_learning_unit("课堂", learning_unit_title, learning_unit_content, count_grade, allow_comment)
+        # 点击新建学习单元创建按钮
+        self.click_new_learning_unit_create_button()
+        # 断言新建学习单元创建成功提示框是否出现
+        result = self.is_new_learning_unit_create_success_alert_displayed()
+        log.info(f"新建课堂学习单元结果：{result}")
         # 切出课程工作台iframe
         self.switch_out_iframe()
         return result
