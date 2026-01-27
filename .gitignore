@@ -40,8 +40,8 @@ ENV/
 .idea/
 *.iml
 
-# VS Code（忽略个人配置，保留项目配置）
-.vscode/settings.json
+# VS Code（不提交到远程仓库）
+.vscode/
 
 # 其他 IDE
 .pythonpath
