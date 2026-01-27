@@ -834,6 +834,7 @@ class BasePage:
             str: 元素的文本内容
         """
         self.wait_for_ready_state_complete(timeout=3)
+        time.sleep(1)
         element = self.find_element(locator, timeout=timeout)
         text = element.text.strip()
         _, locator_expression = locator
@@ -1092,31 +1093,41 @@ class BasePage:
 
     # ==================== 页面内容检查 ====================
 
-    def page_contains_text(self, text, case_sensitive=False):
+    def page_contains_text(self, text, case_sensitive=False, retry_timeout=5):
         """
-        判断当前页面是否包含指定文字（优化：减少等待时间）
+        判断当前页面是否包含指定文字（未找到时在 retry_timeout 秒内重复查询）
 
         Args:
             text: 要查找的文字
             case_sensitive: 是否区分大小写，True区分大小写，False不区分（默认）
+            retry_timeout: 未找到时重复查询的总时长（秒），默认 5 秒，0 表示不重试
 
         Returns:
             bool: True表示页面包含该文字，False表示不包含
         """
         self.wait_for_ready_state_complete(timeout=3)
-        try:
-            page_source = self.driver.page_source
+        poll_interval = 0.5
+        deadline = time.time() + retry_timeout if retry_timeout > 0 else time.time()
 
-            if case_sensitive:
-                contains = text in page_source
-            else:
-                contains = text.lower() in page_source.lower()
+        def _check():
+            try:
+                page_source = self.driver.page_source
+                if case_sensitive:
+                    return text in page_source
+                return text.lower() in page_source.lower()
+            except Exception as e:
+                log.error(f"判断页面是否包含文字失败：{str(e)}")
+                return False
 
-            log.info(f"检查页面是否包含文字'{text}'（区分大小写：{case_sensitive}）：{contains}")
-            return contains
-        except Exception as e:
-            log.error(f"判断页面是否包含文字失败：{str(e)}")
-            return False
+        while True:
+            contains = _check()
+            if contains:
+                log.info(f"检查页面是否包含文字'{text}'（区分大小写：{case_sensitive}）：True")
+                return True
+            if time.time() >= deadline:
+                log.info(f"检查页面是否包含文字'{text}'（区分大小写：{case_sensitive}）：False（{retry_timeout}s 内未找到）")
+                return False
+            time.sleep(poll_interval)
 
     # ==================== 滚动操作 ====================
 

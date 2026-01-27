@@ -1,30 +1,28 @@
 # encoding: utf-8
 # @File  : question_bank_page.py
-# @Author: 孔敬淳
-# @Date  : 2025/01/20
-# @Desc  : 题库页面对象类，封装题库相关的页面操作方法
+# @Author:
+# @Date  :
+# @Desc  : 题库页面对象类。按 Selenium 官方 Page Object 理念：对外暴露“页面提供的服务”，
+#         不在每个定位器上封装 click/input，服务方法内部直接用 self.click(locator)/self.input_rich_text(...)。
 from selenium.webdriver.common.by import By
 
 from logs.log import log
-from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
+from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import (
+    CourseResourcePage,
+)
 
 
 class QuestionBankPage(CourseResourcePage):
-    """题库页面类
+    """题库页面类。
 
-    继承CourseResourcePage基类，提供题库页面的元素操作方法
-    符合Selenium官方Page Object Model设计模式
+    继承 CourseResourcePage，提供题库页面的能力。
+    对外只暴露“服务方法”（如新建题目、导入题库），不暴露每个按钮/输入框的 click/input 封装。定位器与 getter 集中维护，服务内部直接使用。
     """
 
     def __init__(self, driver):
-        """初始化题库页面
-
-        Args:
-            driver: WebDriver实例
-        """
         super().__init__(driver)
 
-    # ==================== 元素定位器（静态定位器）====================
+    # ======================元素定位器（静态）======================
     # 新建题目按钮
     NEW_QUESTION_BUTTON = (By.XPATH, "//button[contains(.,'新建题目')]")
     # 题目内容输入框
@@ -49,178 +47,60 @@ class QuestionBankPage(CourseResourcePage):
     CONFIRM_IMPORT_BUTTON = (By.XPATH, "//button[contains(.,'确认导入')]")
     # 导入题库成功提示框
     IMPORT_QUESTION_BANK_SUCCESS_MESSAGE = (By.XPATH, "//p[contains(.,'成功导入')]")
-    # ==================== 动态定位器方法（需要参数的定位器）====================
+
+    # ==================== 动态定位器 getter ====================
 
     def get_new_question_dropdown_option_locator(self, question_type):
-        """获取新建题目下拉选项的定位器
-
-        Args:
-            question_type: 题目类型
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """题目类型 → 新建题目下拉选项定位器。"""
         return (By.XPATH, f"//li[text()='{question_type}']")
 
     def get_knowledge_locator_by_name(self, knowledge_name):
-        """根据知识点名称返回知识点定位器
-
-        Args:
-            knowledge_name: 知识点名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """知识点名称 → 知识点展示区域定位器。"""
         return (By.XPATH, f"//span[text()='{knowledge_name}']/parent::div")
 
     def get_select_knowledge_locator_by_name(self, knowledge_name):
-        """根据知识点名称返回选择关联知识点定位器
-
-        Args:
-            knowledge_name: 知识点名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """知识点名称 → 选择关联知识点按钮定位器。"""
         return (By.XPATH, f"//span[text()='{knowledge_name}']/parent::div/following-sibling::div/button")
 
-    # =============================== 页面操作方法 ===============================
-    def click_new_question_button(self):
-        """点击新建题目按钮"""
-        log.info(f"点击新建题目按钮，定位器为：{self.NEW_QUESTION_BUTTON[1]}")
-        return self.click(self.NEW_QUESTION_BUTTON)
+    # ==================== 服务方法（页面对外能力） ====================
 
-    def click_new_question_dropdown_option(self, question_type):
-        """点击新建题目下拉选项"""
-        log.info(f"点击新建题目下拉选项：{question_type}，定位器为：{self.get_new_question_dropdown_option_locator(question_type)[1]}")
-        return self.click(self.get_new_question_dropdown_option_locator(question_type))
-
-    def input_question_content(self, question_content):
-        """输入题目内容（使用富文本输入方法）"""
-        log.info(f"输入题目内容：{question_content}，定位器为：{self.QUESTION_CONTENT_INPUT[1]}")
-        return self.input_rich_text(self.QUESTION_CONTENT_INPUT, question_content)
-
-    def input_reference_answer(self, reference_answer):
-        """输入参考答案（使用富文本输入方法）"""
-        log.info(f"输入参考答案：{reference_answer}，定位器为：{self.REFERENCE_ANSWER_INPUT[1]}")
-        return self.input_rich_text(self.REFERENCE_ANSWER_INPUT, reference_answer)
-
-    def input_question_analysis(self, question_analysis):
-        """输入题目解析（使用富文本输入方法）"""
-        log.info(f"输入题目解析：{question_analysis}，定位器为：{self.QUESTION_ANALYSIS_INPUT[1]}")
-        return self.input_rich_text(self.QUESTION_ANALYSIS_INPUT, question_analysis)
-
-    def click_select_knowledge_button(self):
-        """点击选择知识点按钮"""
-        log.info(f"点击选择知识点按钮，定位器为：{self.SELECT_KNOWLEDGE_BUTTON[1]}")
-        return self.click(self.SELECT_KNOWLEDGE_BUTTON)
-
-    def hover_knowledge_by_name(self, knowledge_name):
-        """悬浮到知识点"""
-        log.info(f"悬浮到知识点：{knowledge_name}，定位器为：{self.get_knowledge_locator_by_name(knowledge_name)[1]}")
-        return self.hover(self.get_knowledge_locator_by_name(knowledge_name))
-
-    def click_knowledge_by_name(self, knowledge_name):
-        """点击知识点"""
-        log.info(f"点击知识点：{knowledge_name}，定位器为：{self.get_knowledge_locator_by_name(knowledge_name)[1]}")
-        return self.click(self.get_knowledge_locator_by_name(knowledge_name))
-
-    def select_knowledge_by_name(self, knowledge_name):
-        """选择知识点"""
-        log.info(f"选择知识点：{knowledge_name}，定位器为：{self.get_select_knowledge_locator_by_name(knowledge_name)[1]}")
-        return self.click(self.get_select_knowledge_locator_by_name(knowledge_name))
-
-    def click_confirm_knowledge_button(self):
-        """点击关联知识点确定按钮"""
-        log.info(f"点击关联知识点确定按钮，定位器为：{self.CONFIRM_KNOWLEDGE_BUTTON[1]}")
-        return self.click(self.CONFIRM_KNOWLEDGE_BUTTON)
-
-    def click_open_to_students_switch(self):
-        """点击开放给学生开关"""
-        log.info(f"点击开放给学生开关，定位器为：{self.OPEN_TO_STUDENTS_SWITCH[1]}")
-        return self.click(self.OPEN_TO_STUDENTS_SWITCH)
-
-    def click_create_question_button(self):
-        """点击创建习题按钮"""
-        log.info(f"点击创建习题按钮，定位器为：{self.CREATE_QUESTION_BUTTON[1]}")
-        return self.click(self.CREATE_QUESTION_BUTTON)
-
-    def is_create_question_success_message_displayed(self):
-        """查看创建习题成功提示框是否出现"""
-        log.info(f"查看创建习题成功提示框是否出现，定位器为：{self.CREATE_QUESTION_SUCCESS_MESSAGE[1]}")
-        return self.is_displayed(self.CREATE_QUESTION_SUCCESS_MESSAGE)
-
-    def click_import_question_bank_button(self):
-        """点击导入题库按钮"""
-        log.info(f"点击导入题库按钮，定位器为：{self.IMPORT_QUESTION_BANK_BUTTON[1]}")
-        return self.click(self.IMPORT_QUESTION_BANK_BUTTON)
-
-    def click_confirm_import_button(self):
-        """点击确认导入按钮"""
-        log.info(f"点击确认导入按钮，定位器为：{self.CONFIRM_IMPORT_BUTTON[1]}")
-        return self.click(self.CONFIRM_IMPORT_BUTTON)
-
-    def is_import_question_bank_success_message_displayed(self):
-        """查看导入题库成功提示框是否出现"""
-        log.info(f"查看导入题库成功提示框是否出现，定位器为：{self.IMPORT_QUESTION_BANK_SUCCESS_MESSAGE[1]}")
-        return self.is_displayed(self.IMPORT_QUESTION_BANK_SUCCESS_MESSAGE)
-
-    def new_question(self, question_type, question_content, reference_answer, question_analysis, knowledge_name):
-        """新建题目"""
-        log.info(f"新建题目：{question_type}，题目内容为：{question_content}，参考答案为：{reference_answer}，题目解析为：{question_analysis}")
-        # 切换到课程工作台iframe
-        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程工作空间iframe
-        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
-        # 点击新建题目按钮
-        self.click_new_question_button()
-        # 点击新建题目下拉选项
-        self.click_new_question_dropdown_option(question_type)
-        # 输入题目内容
-        self.input_question_content(question_content)
-        # 输入参考答案
-        self.input_reference_answer(reference_answer)
-        # 输入题目解析
-        self.input_question_analysis(question_analysis)
-        # 点击选择知识点按钮
-        self.click_select_knowledge_button()
-        # 悬浮到知识点
-        self.hover_knowledge_by_name(knowledge_name)
-        # 选择知识点
-        self.select_knowledge_by_name(knowledge_name)
-        # 点击关联知识点确定按钮
-        self.click_confirm_knowledge_button()
-        # 点击开放给学生开关
-        self.click_open_to_students_switch()
-        # 点击创建习题按钮
-        self.click_create_question_button()
-        # 断言创建习题成功提示框是否出现
-        result = self.is_create_question_success_message_displayed()
+    def new_question(
+        self,
+        question_type,
+        question_content,
+        reference_answer,
+        question_analysis,
+        knowledge_name,
+    ):
+        """新建题目：选择题型、填写内容与解析、关联知识点、开放给学生、创建，返回是否出现题目创建成功提示。"""
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)  # 切入课程工作台 iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)  # 切入课程工作空间 iframe
+        self.click(self.NEW_QUESTION_BUTTON)  # 点击新建题目
+        self.click(self.get_new_question_dropdown_option_locator(question_type))  # 选择题目类型
+        self.input_rich_text(self.QUESTION_CONTENT_INPUT, question_content)  # 输入题目内容
+        self.input_rich_text(self.REFERENCE_ANSWER_INPUT, reference_answer)  # 输入参考答案
+        self.input_rich_text(self.QUESTION_ANALYSIS_INPUT, question_analysis)  # 输入题目解析
+        self.click(self.SELECT_KNOWLEDGE_BUTTON)  # 点击选择知识点
+        self.hover(self.get_knowledge_locator_by_name(knowledge_name))  # 悬浮到指定知识点
+        self.click(self.get_select_knowledge_locator_by_name(knowledge_name))  # 选择该知识点
+        self.click(self.CONFIRM_KNOWLEDGE_BUTTON)  # 确定关联知识点
+        self.click(self.OPEN_TO_STUDENTS_SWITCH)  # 开放给学生
+        self.click(self.CREATE_QUESTION_BUTTON)  # 点击创建习题
+        result = self.is_displayed(self.CREATE_QUESTION_SUCCESS_MESSAGE)  # 检查是否出现题目创建成功提示
         log.info(f"创建习题结果：{result}")
-        # 切出课程资源iframe
-        self.switch_out_iframe()
-        # 切出课程工作台iframe
-        self.switch_out_iframe()
+        self.switch_out_iframe()  # 切出课程工作空间 iframe
+        self.switch_out_iframe()  # 切出课程工作台 iframe
         return result
 
     def import_question_bank(self, file_path):
-        """导入题库"""
-        log.info(f"导入题库：{file_path}")
-        # 切换到课程工作台iframe
-        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)
-        # 切换到课程工作空间iframe
-        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)
-        # 点击导入题库按钮
-        self.click_import_question_bank_button()
-        # 上传题库文件
-        self.upload_file(file_path)
-        # 点击确认导入按钮
-        self.click_confirm_import_button()
-        # 断言导入题库成功提示框是否出现
-        result = self.is_import_question_bank_success_message_displayed()
+        """导入题库：点击导入题库、上传文件、确认导入，返回是否出现成功导入提示。"""
+        self.switch_to_iframe(self.COURSE_WORKBENCH_IFRAME)  # 切入课程工作台 iframe
+        self.switch_to_iframe(self.COURSE_WORKSPACE_IFRAME)  # 切入课程工作空间 iframe
+        self.click(self.IMPORT_QUESTION_BANK_BUTTON)  # 点击导入题库
+        self.upload_file(file_path)  # 上传题库文件（基类方法，需在 iframe 内、弹窗已打开时调用）
+        self.click(self.CONFIRM_IMPORT_BUTTON)  # 点击确认导入
+        result = self.is_displayed(self.IMPORT_QUESTION_BANK_SUCCESS_MESSAGE)  # 检查是否出现成功导入提示
         log.info(f"导入题库结果：{result}")
-        # 切出课程资源iframe
-        self.switch_out_iframe()
-        # 切出课程工作台iframe
-        self.switch_out_iframe()
+        self.switch_out_iframe()  # 切出课程工作空间 iframe
+        self.switch_out_iframe()  # 切出课程工作台 iframe
         return result

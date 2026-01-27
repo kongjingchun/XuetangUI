@@ -12,7 +12,6 @@ from testcases.helpers.test_context_helper import TestContextHelper
 from common.yaml_config import GetConf
 from logs.log import log
 from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage
-from page.teacher_workbench.course_workbench.course_workbench_page import CourseWorkbenchPage
 from page.teacher_workbench.course_workbench.course_teaching.teaching_class_management_page import TeachingClassManagementPage
 
 

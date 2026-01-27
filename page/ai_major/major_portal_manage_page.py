@@ -1,9 +1,9 @@
 # encoding: utf-8
-# @File  : MajorPortalManagePage.py
-# @Author: 孔敬淳
-# @Date  : 2025/12/31
-# @Desc  : 专业门户管理页面对象类，封装专业门户管理相关的页面操作方法
-from time import sleep
+# @File  : major_portal_manage_page.py
+# @Author:
+# @Date  :
+# @Desc  : 专业门户管理页面对象类。按 Selenium 官方 Page Object 理念：对外暴露“页面提供的服务”，
+#         不在每个定位器上封装 click/input，服务方法内部直接用 self.click(locator)/self.input_text(...)。
 from selenium.webdriver.common.by import By
 
 from base.base_page import BasePage
@@ -11,283 +11,82 @@ from logs.log import log
 
 
 class MajorPortalManagePage(BasePage):
-    """专业门户管理页面类
+    """专业门户管理页面类。
 
-    继承BasePage类，提供专业门户管理页面元素操作方法
-    符合Selenium官方Page Object Model设计模式
+    对外只暴露“服务方法”（如按专业名称进入编辑页、编辑门户并校验等），
+    不暴露每个按钮/输入框的 click/input 封装。定位器与 getter 集中维护，服务内部直接使用。
     """
 
     def __init__(self, driver):
-        """初始化专业门户管理页面
-
-        Args:
-            driver: WebDriver实例
-        """
         super().__init__(driver)
 
-    # ==================== 元素定位器（静态定位器）====================
-    # 专业门户管理iframe
+    # ======================元素定位器（静态）======================
+    # 专业门户管理主内容区域 iframe
     MAJOR_PORTAL_MANAGE_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-2104']")
+    # 专业门户管理编辑页 iframe
+    MAJOR_PORTAL_EDIT_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-3005']")
     # 搜索关键词输入框
     SEARCH_KEYWORD_INPUT = (By.XPATH, "//input[@placeholder='专业名称 ｜ 专业代码']")
     # 搜索按钮
     SEARCH_BUTTON = (By.XPATH, "//button[contains(.,'搜索')]")
-    # 专业门户管理编辑页iframe
-    MAJOR_PORTAL_EDIT_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-3005']")
-    # 头部导航栏元素
-    HEADER_NAVIGATION_BAR = (By.XPATH, "//div[@class='page-header']//h1")
     # 编辑页面按钮
     EDIT_PAGE_BUTTON = (By.XPATH, "//button[contains(.,'编辑页面')]")
+    # 头部导航栏
+    HEADER_NAVIGATION_BAR = (By.XPATH, "//div[@class='page-header']//h1")
     # 发布按钮
     PUBLISH_BUTTON = (By.XPATH, "//button[contains(.,'发布')]")
-    # 发布确认按钮
+    # 发布确认弹窗中的确定按钮
     PUBLISH_CONFIRM_BUTTON = (By.XPATH, "//div[@aria-label='发布确认']//button[contains(.,'确定')]")
-    # 编辑页打开专业门户链接
+    # 编辑页中的「打开专业门户」链接
     OPEN_PORTAL_LINK_IN_EDIT_PAGE = (By.XPATH, "//a[contains(.,' 打开专业门户 ')]")
 
-    # ==================== 动态定位器方法（需要参数的定位器）====================
+    # ==================== 动态定位器 getter ====================
 
     def get_open_portal_button_locator(self, major_name):
-        """获取根据专业名称定位打开门户按钮的定位器
-
-        Args:
-            major_name: 专业名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """专业名称 → 该行「打开门户」按钮定位器。"""
         return (By.XPATH, f"//tr[.//td[contains(.,'{major_name}')]]//button[contains(.,'打开门户')]")
 
     def get_edit_button_locator(self, major_name):
-        """获取根据专业名称定位编辑按钮的定位器
-
-        Args:
-            major_name: 专业名称
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """专业名称 → 该行「编辑」按钮定位器。"""
         return (By.XPATH, f"//tr[.//td[contains(.,'{major_name}')]]//button[contains(.,'编辑')]")
 
     def get_tab_locator(self, index=1):
-        """获取根据索引定位标签页的定位器
-
-        Args:
-            index: 标签页索引，从1开始，默认为1（第1个标签页）
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """标签页索引（从 1 开始）→ 专业门户管理标签页定位器。"""
         return (By.XPATH, f"(//span[contains(.,'专业门户管理')])[{index}]")
 
     def get_navigation_name_input_locator(self, index=1):
-        """获取导航名称设置输入框的定位器
-
-        Args:
-            index: 导航索引，从1开始，默认为1（第1个导航）
-
-        Returns:
-            tuple: 定位器元组 (By.XPATH, xpath)
-        """
+        """导航索引（从 1 开始）→ 导航名称输入框定位器。"""
         return (By.XPATH, f"(//label[text()='名称'])[{index}]/following-sibling::div//input")
 
-    # ==================== 页面操作方法 ====================
-
-    def switch_2_major_portal_manage_iframe(self):
-        """切换到专业门户管理页面的iframe
-
-        Returns:
-            切换操作结果
-        """
-        log.info(f"切换到专业门户管理页面的iframe，定位器为：{self.MAJOR_PORTAL_MANAGE_IFRAME[1]}")
-        return self.switch_to_iframe(self.MAJOR_PORTAL_MANAGE_IFRAME)
-
-    def input_search_keyword(self, keyword):
-        """输入搜索关键词
-
-        Args:
-            keyword: 搜索关键词（专业名称或专业代码）
-
-        Returns:
-            输入操作结果
-        """
-        log.info(f"输入搜索关键词：{keyword}，定位器为：{self.SEARCH_KEYWORD_INPUT[1]}")
-        return self.input_text(self.SEARCH_KEYWORD_INPUT, keyword)
-
-    def click_search_button(self):
-        """点击搜索按钮
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击搜索按钮，定位器为：{self.SEARCH_BUTTON[1]}")
-        return self.click(self.SEARCH_BUTTON)
-
-    def click_open_portal_button_by_major_name(self, major_name):
-        """根据专业名称点击打开门户按钮
-
-        Args:
-            major_name: 专业名称
-
-        Returns:
-            点击操作结果
-        """
-        locator = self.get_open_portal_button_locator(major_name)
-        log.info(f"根据专业名称'{major_name}'点击打开门户按钮，定位器为：{locator[1]}")
-        return self.click(locator, timeout=15)
-
-    def click_edit_button_by_major_name(self, major_name):
-        """根据专业名称点击编辑按钮
-
-        Args:
-            major_name: 专业名称
-
-        Returns:
-            点击操作结果
-        """
-        locator = self.get_edit_button_locator(major_name)
-        log.info(f"根据专业名称'{major_name}'点击编辑按钮，定位器为：{locator[1]}")
-        return self.click(locator, timeout=15, fluent=False)
-
-    def click_tab_by_index(self, index=1):
-        """根据索引点击标签页
-
-        Args:
-            index: 标签页索引，从1开始，默认为1（第1个标签页）
-
-        Returns:
-            点击操作结果
-        """
-        locator = self.get_tab_locator(index)
-        log.info(f"点击标签页（索引：{index}），定位器为：{locator[1]}")
-        return self.click(locator, timeout=10)
+    # ==================== 服务方法（页面对外能力） ====================
 
     def click_edit_page_button_by_major_name(self, major_name):
-        """根据专业名称点击编辑页面按钮
-
-        Args:
-            major_name: 专业名称
-
-        Returns:
-            点击操作结果
-        """
-        # 切换到专业门户管理iframe
-        self.switch_2_major_portal_manage_iframe()
-        # 输入搜索关键词
-        self.input_search_keyword(major_name)
-        # 点击搜索按钮
-        self.click_search_button()
-        sleep(1)
-        # 根据专业名称点击编辑按钮
-        result = self.click_edit_button_by_major_name(major_name)
-        # 切出专业门户管理iframe
-        self.switch_out_iframe()
+        """按专业名称在列表页搜索并点击编辑，进入编辑页。返回是否点击成功。"""
+        self.switch_to_iframe(self.MAJOR_PORTAL_MANAGE_IFRAME)  # 切入专业门户管理 iframe
+        self.input_text(self.SEARCH_KEYWORD_INPUT, major_name)  # 输入专业名称搜索
+        self.click(self.SEARCH_BUTTON)  # 点击搜索
+        locator = self.get_edit_button_locator(major_name)  # 获取编辑按钮定位器
+        log.info(f"根据专业名称'{major_name}'点击编辑按钮，定位器为：{locator[1]}")
+        result = self.click(locator, timeout=15, fluent=False)  # 点击编辑按钮
+        self.switch_out_iframe()  # 切回默认上下文
         log.info(f"根据专业名称'{major_name}'点击编辑按钮结果：{result}")
         return result
 
-    # ======================================= 编辑页面元素操作 ======================================
-
-    def switch_2_major_portal_edit_iframe(self):
-        """切换到专业门户管理编辑页iframe
-
-        Returns:
-            切换操作结果
-        """
-        log.info(f"切换到专业门户管理编辑页iframe，定位器为：{self.MAJOR_PORTAL_EDIT_IFRAME[1]}")
-        return self.switch_to_iframe(self.MAJOR_PORTAL_EDIT_IFRAME)
-
-    def click_edit_page_button(self):
-        """点击编辑页面按钮
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击编辑页面按钮，定位器为：{self.EDIT_PAGE_BUTTON[1]}")
-        return self.click(self.EDIT_PAGE_BUTTON, timeout=10)
-
-    def click_header_navigation_bar(self):
-        """点击头部导航栏
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击头部导航栏，定位器为：{self.HEADER_NAVIGATION_BAR[1]}")
-        return self.click(self.HEADER_NAVIGATION_BAR, timeout=10)
-
-    def input_navigation_name(self, navigation_name, index=1):
-        """输入导航名称
-
-        Args:
-            navigation_name: 导航名称
-            index: 导航索引，从1开始，默认为1（第1个导航）
-
-        Returns:
-            输入操作结果
-        """
-        locator = self.get_navigation_name_input_locator(index)
-        log.info(f"输入导航名称（索引：{index}）：{navigation_name}，定位器为：{locator[1]}")
-        self.click(locator, timeout=10)
-        result = self.input_text(locator, navigation_name)
-        return result
-
-    def click_publish_button(self):
-        """点击发布按钮
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击发布按钮，定位器为：{self.PUBLISH_BUTTON[1]}")
-        return self.click(self.PUBLISH_BUTTON, timeout=10)
-
-    def click_publish_confirm_button(self):
-        """点击发布确认按钮
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击发布确认按钮，定位器为：{self.PUBLISH_CONFIRM_BUTTON[1]}")
-        return self.click(self.PUBLISH_CONFIRM_BUTTON, timeout=10)
-
-    def click_open_portal_link_in_edit_page(self):
-        """点击编辑页打开专业门户链接
-
-        Returns:
-            点击操作结果
-        """
-        log.info(f"点击编辑页打开专业门户链接，定位器为：{self.OPEN_PORTAL_LINK_IN_EDIT_PAGE[1]}")
-        return self.click(self.OPEN_PORTAL_LINK_IN_EDIT_PAGE, timeout=10)
-
     def edit_portal(self, navigation_name=None, index=1):
-        """编辑门户
-
-        Args:
-            navigation_name: 导航名称
-            index: 导航索引，从1开始，默认为1（第1个导航）
-
-        Returns:
-            bool: True表示编辑成功，False表示编辑失败
-        """
-        # 切换到专业门户管理编辑页iframe
-        self.switch_2_major_portal_edit_iframe()
-        # 点击编辑页面按钮
-        self.click_edit_page_button()
-        # 点击头部导航栏
-        self.click_header_navigation_bar()
-        # 输入导航名称
-        self.input_navigation_name(navigation_name, index=index)
-        # 点击发布按钮
-        self.click_publish_button()
-        # 点击发布确认按钮
-        self.click_publish_confirm_button()
-        # 点击编辑页打开专业门户链接
-        self.click_open_portal_link_in_edit_page()
-        # 切出专业门户管理编辑页iframe
-        self.switch_out_iframe()
-        # 切换到最新打开的窗口
-        self.switch_to_new_window()
-        # 等待新页面加载完成
-        self.wait_for_ready_state_complete(timeout=10)
-        sleep(1)  # 额外等待1秒，确保页面内容完全加载
-        result = self.page_contains_text(navigation_name)
+        """在编辑页中修改导航名称、发布并打开专业门户，最后在新窗口校验是否包含 navigation_name。返回校验结果。"""
+        self.switch_to_iframe(self.MAJOR_PORTAL_EDIT_IFRAME)  # 切入专业门户编辑页 iframe
+        self.click(self.EDIT_PAGE_BUTTON, timeout=10)  # 点击编辑页面
+        self.click(self.HEADER_NAVIGATION_BAR, timeout=10)  # 点击头部导航栏
+        if navigation_name is not None:
+            locator = self.get_navigation_name_input_locator(index)  # 获取导航名称输入框定位器
+            self.click(locator, timeout=10)  # 聚焦导航名称输入框
+            self.input_text(locator, navigation_name)  # 输入导航名称
+        self.click(self.PUBLISH_BUTTON, timeout=10)  # 点击发布
+        self.click(self.PUBLISH_CONFIRM_BUTTON, timeout=10)  # 点击发布确认
+        self.click(self.OPEN_PORTAL_LINK_IN_EDIT_PAGE, timeout=10)  # 点击打开专业门户
+        self.switch_out_iframe()  # 切回默认上下文
+        self.switch_to_new_window()  # 切换到新打开的窗口
+        self.wait_for_ready_state_complete(timeout=10)  # 等待页面加载完成
+        result = self.page_contains_text(navigation_name)  # 检查是否包含导航名称
         log.info(f"编辑门户结果：{result}")
         return result

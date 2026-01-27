@@ -9,14 +9,14 @@ import pytest
 
 from common.report_add_img import add_img_2_report
 from common.tools import get_project_path, sep
+from testcases.helpers.test_context_helper import TestContextHelper
+from common.yaml_config import GetConf
+from logs.log import log
 from page.teacher_workbench.course_workbench.course_construction.course_resource.exam_page import ExamPage
 from page.teacher_workbench.course_workbench.course_construction.course_resource.homework_page import HomeworkPage
 from page.teacher_workbench.course_workbench.course_construction.course_resource.link_page import LinkPage
 from page.teacher_workbench.course_workbench.course_construction.course_resource.overview_page import OverviewPage
 from page.teacher_workbench.course_workbench.course_construction.course_resource.question_bank_page import QuestionBankPage
-from testcases.helpers.test_context_helper import TestContextHelper
-from common.yaml_config import GetConf
-from logs.log import log
 from page.teacher_workbench.my_teaching_courses_page import MyTeachingCoursesPage
 from page.teacher_workbench.course_workbench.course_construction.course_resource.course_resource_page import CourseResourcePage
 

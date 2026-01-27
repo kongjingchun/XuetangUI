@@ -77,6 +77,7 @@ class MyClassesPage(BasePage):
     FIRST_KNOWLEDGE_POINT_CHECKBOX = (By.XPATH, "//div[@aria-label='选择知识点']//label[1]/span[1]")
     # 选择知识点弹窗的确定按钮
     SELECT_KNOWLEDGE_CONFIRM_BUTTON = (By.XPATH, "//div[@aria-label='选择知识点']//button[contains(.,'确定')]")
+
     # ==================== 动态定位器 getter ====================
 
     def get_class_card_locator(self, class_value):
