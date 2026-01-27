@@ -71,10 +71,20 @@ class TestMyClasses:
             chapter_title = f"章节_{teach_class_info['教学班名称']}"
             result = my_classes_page.create_chapter(chapter_title)
             add_img_2_report(driver, "创建章")
-            assert result is True, "创建章失败" 
-        
+            assert result is True, "创建章失败"
+
         with allure.step("在章下创建节"):
             sub_chapter_title = f"子章节_{teach_class_info['教学班名称']}"
             result = my_classes_page.create_section_in_chapter(chapter_title, sub_chapter_title)
             add_img_2_report(driver, "在章下创建节")
-            assert result is True, "在章下创建节失败" 
+            assert result is True, "在章下创建节失败"
+
+        with allure.step("给章节添加学习单元"):
+            result = my_classes_page.add_learning_unit(sub_chapter_title, chapter_title)
+            add_img_2_report(driver, "给章节添加学习单元")
+            assert result is True, "给章节添加学习单元失败"
+
+        with allure.step("给章节添加知识图谱"):
+            result = my_classes_page.add_knowledge_graph(sub_chapter_title)
+            add_img_2_report(driver, "给章节添加知识图谱")
+            assert result is True, "给章节添加知识图谱失败"
