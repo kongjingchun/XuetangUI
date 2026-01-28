@@ -61,12 +61,12 @@ class MajorManagePage(BasePage):
     def get_new_major_belong_dep_dropdown_option_locator(self, dept_name):
         """院系名称 → 所属院系下拉选项中该院系项定位器。"""
         # 不依赖 aria-hidden，适配 Element Plus 下拉挂载到 body 的情况，只在当前可见下拉面板中找选项
-        return (By.XPATH, f"//div[contains(@class,'el-select-dropdown')]//li[.//span[text()='{dept_name}']]")
+        return (By.XPATH, f"//div[@aria-hidden='false']//li[.//span[text()='{dept_name}']]")
 
     def get_new_major_belong_prof_dropdown_option_locator(self, prof_name):
         """专业负责人姓名 → 专业负责人下拉选项中该项定位器。"""
         # 不直接在整页上找 span，避免命中其他下拉或隐藏的历史下拉；只在当前可见下拉面板中找负责人
-        return (By.XPATH, f"//div[contains(@class,'el-select-dropdown')]//li[.//span[text()='{prof_name}']]")
+        return (By.XPATH, f"//div[@aria-hidden='false']//li[.//span[text()='{prof_name}']]")
 
     def get_new_major_build_level_radio_locator(self, level="国家一流本科专业"):
         """建设层次（含'国'/'省'/'校'/'普'）→ 对应单选圆点定位器。"""
