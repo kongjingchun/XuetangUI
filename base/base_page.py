@@ -278,17 +278,18 @@ class BasePage:
         locate_type, locator_expression = locator
         log.info(f"准备点击元素：{locator_expression}，定位方式：{locate_type}")
 
+        # 先短等“可点击”，避免下拉选项等元素因不满足 clickable 而白等整段 timeout
+        clickable_timeout = min(timeout, 5)
+
         for attempt in range(2):
             try:
                 element = None
-                use_js_click_fallback = False
                 try:
-                    element = self._wait_for_element(locator, condition_type="clickable", timeout=timeout)
+                    element = self._wait_for_element(locator, condition_type="clickable", timeout=clickable_timeout)
                 except TimeoutException:
-                    # 兜底：部分环境（如 Linux Headless、iframe 内表格按钮）下元素已在 DOM 但未满足 clickable，改用 presence + JS 点击
-                    log.warning(f"等待元素可点击超时，尝试等待元素存在后使用 JavaScript 点击：{locator_expression}")
+                    # 兜底：元素已在 DOM 但未满足 clickable（如 Element 下拉选项、Headless 内元素），改等 presence 后统一走多种点击方式
+                    log.warning(f"等待元素可点击超时（{clickable_timeout}s），改为等待元素存在后滚动并尝试多种点击：{locator_expression}")
                     element = self._wait_for_element(locator, condition_type="presence", timeout=timeout)
-                    use_js_click_fallback = True
                 time.sleep(0.1)
 
                 if need_hover:
@@ -303,18 +304,7 @@ class BasePage:
                 except Exception as scroll_error:
                     log.warning(f"滚动元素失败，继续尝试点击：{scroll_error}")
 
-                if use_js_click_fallback:
-                    try:
-                        self.driver.execute_script("arguments[0].click();", element)
-                        time.sleep(0.1)
-                        self.wait_for_ready_state_complete(timeout=1)
-                        log.info(f"元素 {locator_expression} JavaScript 点击成功")
-                        return self if fluent else True
-                    except Exception as js_error:
-                        log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, js_error, element)}")
-                        raise Exception(f"元素 {locator_expression} JavaScript 点击失败：{js_error}")
-
-                # 尝试多种点击方式
+                # 统一尝试多种点击方式（先普通点击，再 ActionChains，最后 JavaScript）
                 element_ref = element
                 last_click_error = None
                 click_methods = [
