@@ -299,11 +299,7 @@ class BasePage:
                         log.warning(f"hover操作失败，继续尝试点击：{hover_error}")
 
                 try:
-                    self.driver.execute_script(
-                        "arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});",
-                        element
-                    )
-                    time.sleep(0.15)
+                    self.scroll_to_element(locator)
                 except Exception as scroll_error:
                     log.warning(f"滚动元素失败，继续尝试点击：{scroll_error}")
 
@@ -428,9 +424,11 @@ class BasePage:
                 # 避免因为 y 为负值等原因被 Selenium 认为不可见而超时。
                 element = self._wait_for_element(locator, condition_type="presence", timeout=timeout)
 
-                # 滚动元素到可视区域中心位置
-                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element)
-                time.sleep(0.2)  # 等待滚动完成
+                # 滚动到元素可见，确保后续点击/输入可操作
+                try:
+                    self.scroll_to_element(locator)
+                except Exception as scroll_err:
+                    log.warning(f"[input_text] 滚动到元素失败，继续尝试输入：{scroll_err}")
 
                 # 记录元素关键属性，便于判断是否命中错元素/被遮挡/不可输入
                 try:

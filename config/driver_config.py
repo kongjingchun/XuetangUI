@@ -75,7 +75,7 @@ class DriverConfig:
             "--no-sandbox",  # 禁用沙箱模式，适用于容器化环境或权限受限的系统
             "--disable-dev-shm-usage",  # 禁用devshm使用，解决内存不足问题
         ]
-        
+
         # macOS 系统专用配置（解决 Chrome instance exited 问题）
         if sys.platform == "darwin":
             compatibility_args.extend([
@@ -105,7 +105,7 @@ class DriverConfig:
             # 如果读取配置失败，默认根据操作系统判断
             # Linux系统默认使用headless，Mac和Windows默认不使用
             use_headless = sys.platform.startswith("linux")
-        
+
         # Headless模式相关配置（所有平台统一，参考 Chrome 官方与 Selenium 最佳实践）
         # 参考：https://developer.chrome.com/docs/chromium/new-headless
         # 要点：1) 使用 --headless（Chrome 112+ 已与 headful 共用代码）；2) 必须设置 --window-size（否则 Linux 等易出现点击/输入异常）
@@ -137,7 +137,7 @@ class DriverConfig:
             DriverConfig.log.info(f"启用Headless模式（{sys.platform}），视口 1920x1080")
         else:
             DriverConfig.log.info(f"使用有界面模式（{sys.platform}）")
-        
+
         # Linux系统专用配置（无论是否headless都需要）
         linux_specific_args = []
         if sys.platform.startswith("linux"):
@@ -148,7 +148,7 @@ class DriverConfig:
             chrome_binary_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
             if os.path.exists(chrome_binary_path):
                 options.binary_location = chrome_binary_path
-        
+
         # 应用所有配置参数
         for arg in security_args + compatibility_args + headless_args + linux_specific_args:
             options.add_argument(arg)
@@ -203,8 +203,8 @@ class DriverConfig:
         # 检查是否存在旧的chromedriver文件（可能是macOS版本）
         old_chromedriver_path = os.path.join(get_project_path(), "driver_files", "chromedriver")
         if os.path.exists(old_chromedriver_path) and sys.platform.startswith("linux"):
-            log.warning(f"检测到旧的chromedriver文件: {old_chromedriver_path}")
-            log.warning(f"Linux系统应使用chromedriver_linux，请确保 {local_path} 文件存在")
+            log.info(f"检测到旧的chromedriver文件: {old_chromedriver_path}")
+            log.info(f"Linux系统应使用chromedriver_linux，请确保 {local_path} 文件存在")
 
         # 检查文件是否存在（Windows上不检查执行权限，因为Windows不使用Unix权限系统）
         if os.path.exists(local_path):
@@ -274,12 +274,12 @@ class DriverConfig:
         # 如果本地不存在且允许网络下载，尝试使用webdriver-manager（需要网络）
         try:
             log.info(f"本地ChromeDriver不存在或不可用，尝试使用webdriver-manager下载...")
-            
+
             # 配置webdriver-manager的缓存目录为本地driver_files目录
             # 这样下载的文件会直接保存到本地，避免重复下载
             driver_files_dir = os.path.join(get_project_path(), "driver_files")
             os.makedirs(driver_files_dir, exist_ok=True)
-            
+
             driver_manager = ChromeDriverManager(
                 url=DriverConfig.CHROMEDRIVER_URL,
                 latest_release_url=DriverConfig.CHROMEDRIVER_LATEST_URL
@@ -414,7 +414,7 @@ class DriverConfig:
                     # 配置webdriver-manager的缓存目录为本地driver_files目录
                     driver_files_dir = os.path.join(get_project_path(), "driver_files")
                     os.makedirs(driver_files_dir, exist_ok=True)
-                    
+
                     driver_manager = ChromeDriverManager(
                         url=DriverConfig.CHROMEDRIVER_URL,
                         latest_release_url=DriverConfig.CHROMEDRIVER_LATEST_URL
