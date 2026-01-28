@@ -1,5 +1,5 @@
 # encoding: utf-8
-# @File  : test_010_course_info.py
+# @File  : test_012_course_outline.py
 # @Author: 孔敬淳
 # @Date  : 2025/12/31
 # @Desc  : 课程信息测试用例，符合Selenium官方Page Object Model和pytest框架规范
