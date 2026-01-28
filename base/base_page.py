@@ -379,21 +379,58 @@ class BasePage:
 
         for attempt in range(2):
             try:
+                log.info(
+                    f"[input_text] attempt={attempt + 1}/2 locator={locator_expression} "
+                    f"timeout={timeout} clear_first={clear_first} need_enter={need_enter}"
+                )
                 element = self._wait_for_element(locator, condition_type="visible", timeout=timeout)
 
                 # 滚动元素到可视区域中心位置
                 self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element)
                 time.sleep(0.2)  # 等待滚动完成
 
+                # 记录元素关键属性，便于判断是否命中错元素/被遮挡/不可输入
+                try:
+                    rect = element.rect
+                    tag = element.tag_name
+                    displayed = element.is_displayed()
+                    enabled = element.is_enabled()
+                    placeholder = element.get_attribute("placeholder")
+                    name = element.get_attribute("name")
+                    element_id = element.get_attribute("id")
+                    cls = element.get_attribute("class")
+                    before_value = element.get_attribute("value")
+                    active_tag = self.driver.execute_script("return document.activeElement && document.activeElement.tagName;")
+                    active_id = self.driver.execute_script("return document.activeElement && document.activeElement.id;")
+                    active_cls = self.driver.execute_script("return document.activeElement && document.activeElement.className;")
+                    log.info(
+                        "[input_text] element_info "
+                        f"tag={tag} displayed={displayed} enabled={enabled} rect={rect} "
+                        f"id={element_id} name={name} placeholder={placeholder} class={cls} value_before={before_value} "
+                        f"active=({active_tag}#{active_id}.{active_cls})"
+                    )
+                except Exception as info_err:
+                    log.warning(f"[input_text] 获取元素信息失败：{info_err}")
+
                 # 先尝试点击元素确保获得焦点（很多组件化输入框不聚焦时 clear/send_keys 容易失败）
                 try:
                     element.click()
                     time.sleep(0.05)
+                    try:
+                        active_tag = self.driver.execute_script("return document.activeElement && document.activeElement.tagName;")
+                        active_id = self.driver.execute_script("return document.activeElement && document.activeElement.id;")
+                        log.info(f"[input_text] click聚焦后 active=({active_tag}#{active_id})")
+                    except Exception:
+                        pass
                 except Exception:
                     pass  # 点击失败不影响后续兜底
 
                 # 清除原有值（更鲁棒：clear + 全选删除 兜底）
                 if clear_first:
+                    try:
+                        log.info(f"[input_text] clear前 value={element.get_attribute('value')}")
+                    except Exception:
+                        pass
                     try:
                         element.clear()
                         time.sleep(0.02)
@@ -405,6 +442,10 @@ class BasePage:
                         element.send_keys(mod_key, "a")
                         element.send_keys(Keys.BACKSPACE)
                         time.sleep(0.02)
+                    except Exception:
+                        pass
+                    try:
+                        log.info(f"[input_text] clear后 value={element.get_attribute('value')}")
                     except Exception:
                         pass
 
@@ -422,6 +463,7 @@ class BasePage:
                             raise Exception(f"value 校验失败，当前值: {current_value}")
                     except Exception:
                         raise
+                    log.info(f"[input_text] send_keys后 value={element.get_attribute('value')}")
 
                     # 等待页面就绪
                     self.wait_for_ready_state_complete()
@@ -430,7 +472,7 @@ class BasePage:
 
                 except Exception as send_error:
                     # 普通输入失败，尝试使用JavaScript输入
-                    log.info(f"元素 {locator_expression} 普通输入失败，尝试使用JavaScript输入")
+                    log.warning(f"[input_text] 普通输入失败：{type(send_error).__name__}: {send_error}，尝试使用JavaScript输入")
                     try:
                         # 如果元素可能过期，重新定位元素
                         try:
@@ -465,13 +507,18 @@ class BasePage:
                                 element = self._wait_for_element(locator, condition_type="presence", timeout=timeout)
                                 element.send_keys(Keys.RETURN)
 
+                        try:
+                            log.info(f"[input_text] JS设值后 value={element.get_attribute('value')}")
+                        except Exception:
+                            pass
+
                         # 等待页面就绪
                         self.wait_for_ready_state_complete()
                         log.info(f"使用JavaScript输入成功")
                         return self if fluent else True
                     except Exception as js_error:
                         # JavaScript输入也失败
-                        log.info(f"元素 {locator_expression} JavaScript输入也失败：{str(js_error)}")
+                        log.warning(f"[input_text] JavaScript输入也失败：{type(js_error).__name__}: {js_error}")
                         raise Exception(f"元素 {locator_expression} JavaScript输入也失败：{str(js_error)}")
 
             except StaleElementReferenceException:
