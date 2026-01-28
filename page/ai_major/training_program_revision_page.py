@@ -25,7 +25,7 @@ class TrainingProgramRevisionPage(BasePage):
     # 培养方案修订所在 iframe（与培养方案管理同源）
     TRAINING_PROGRAM_MANAGE_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-2102']")
     # 保存按钮
-    SAVE_BUTTON = (By.XPATH, "//button[contains(.,'保存')]")
+    SAVE_BUTTON = (By.XPATH, "//button[./span[text()=' 保存 ']]")
     # 取消按钮
     CANCEL_BUTTON = (By.XPATH, "//button[contains(.,'取消')]")
     # 完成编辑按钮
