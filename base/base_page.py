@@ -407,6 +407,7 @@ class BasePage:
 
                     # 等待页面就绪
                     self.wait_for_ready_state_complete()
+                    log.info(f"元素 {locator_expression} 输入成功")
                     return self if fluent else True
 
                 except Exception as send_error:
@@ -610,6 +611,7 @@ class BasePage:
 
                 # 等待页面就绪
                 self.wait_for_ready_state_complete()
+                log.info(f"富文本编辑器 {locator_expression} 输入成功")
                 return self if fluent else True
 
             except StaleElementReferenceException:
