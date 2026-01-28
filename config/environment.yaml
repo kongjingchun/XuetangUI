@@ -1,13 +1,13 @@
 # 全局变量配置（只需修改这里的序号）
-test_suffix: 714 # 测试环境序号
+test_suffix: 001 # 测试环境序号
 
 # 部署环境配置（控制浏览器驱动和用例执行）
 部署环境:
-  是否本地部署: false  # true: 本地部署，false: 网络部署
+  是否本地部署: true  # true: 本地部署，false: 网络部署
   是否Headless模式: true  # true: 使用Headless模式（无界面），false: 使用有界面模式（需要显示环境）
 school_name: 智慧大学
-url: https://www.gqkt.cn/
-# url: http://192.168.200.215/
+# url: https://www.gqkt.cn/
+url: http://192.168.200.211/
 
 # 院系信息（需要在使用之前定义，因为user部分会引用dept_name）
 department:
@@ -21,9 +21,13 @@ user:
   #   password: 123
 
   # 初始管理员
+  # initial_admin:
+  #   username: superadmin
+  #   password: gqkt111!
+  # 初始管理员
   initial_admin:
-    username: superadmin
-    password: gqkt111!
+    username: orgadmin
+    password: j=zCD7NtiL
   # 教务管理员
   dean:
     姓名: &dean_name dean{suffix}
