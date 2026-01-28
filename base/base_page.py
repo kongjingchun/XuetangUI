@@ -15,6 +15,7 @@ BasePage - Selenium Page Object Model 基础类
 
 import datetime
 import os.path
+import sys
 import time
 
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
@@ -384,26 +385,43 @@ class BasePage:
                 self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element)
                 time.sleep(0.2)  # 等待滚动完成
 
-                # 清除原有值
+                # 先尝试点击元素确保获得焦点（很多组件化输入框不聚焦时 clear/send_keys 容易失败）
+                try:
+                    element.click()
+                    time.sleep(0.05)
+                except Exception:
+                    pass  # 点击失败不影响后续兜底
+
+                # 清除原有值（更鲁棒：clear + 全选删除 兜底）
                 if clear_first:
                     try:
                         element.clear()
+                        time.sleep(0.02)
                     except Exception:
-                        pass  # 清除失败不影响后续操作
+                        # element.clear() 在部分组件输入框会失败，继续走兜底
+                        pass
+                    try:
+                        mod_key = Keys.COMMAND if sys.platform == "darwin" else Keys.CONTROL
+                        element.send_keys(mod_key, "a")
+                        element.send_keys(Keys.BACKSPACE)
+                        time.sleep(0.02)
+                    except Exception:
+                        pass
 
                 # 尝试普通输入，如果失败则使用JavaScript输入
                 try:
-                    # 先尝试点击元素确保获得焦点
-                    try:
-                        element.click()
-                        time.sleep(0.1)
-                    except Exception:
-                        pass  # 点击失败不影响后续操作
-
                     # 输入值
                     element.send_keys(fill_value)
                     if need_enter:
                         element.send_keys(Keys.RETURN)
+
+                    # 轻量校验：防止 clear 失败导致“追加输入”或输入被拦截
+                    try:
+                        current_value = element.get_attribute("value") or ""
+                        if fill_value and fill_value not in current_value:
+                            raise Exception(f"value 校验失败，当前值: {current_value}")
+                    except Exception:
+                        raise
 
                     # 等待页面就绪
                     self.wait_for_ready_state_complete()
@@ -417,12 +435,12 @@ class BasePage:
                         # 如果元素可能过期，重新定位元素
                         try:
                             # 尝试使用现有元素
-                            self.driver.execute_script("arguments[0].value = arguments[1];", element, "")
+                            self.driver.execute_script("arguments[0].value = arguments[1];", element, fill_value)
                         except (StaleElementReferenceException, Exception):
                             # 元素过期，重新定位
                             log.info(f"元素 {locator_expression} 在JavaScript输入时过期，重新定位元素")
                             element = self._wait_for_element(locator, condition_type="presence", timeout=timeout)
-                            self.driver.execute_script("arguments[0].value = arguments[1];", element, "")
+                            self.driver.execute_script("arguments[0].value = arguments[1];", element, fill_value)
 
                         # 触发input事件，确保页面响应
                         self.driver.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", element)
@@ -434,8 +452,8 @@ class BasePage:
                             self.wait_for_ready_state_complete(timeout=5)
                             self.driver.execute_script("arguments[0].click();", element)
                             time.sleep(0.1)
-                            # 使用send_keys输入值（关键：某些输入框需要键盘事件）
-                            element.send_keys(fill_value)
+                            # 补一个轻量键盘事件（部分输入框依赖焦点/键盘事件触发联动）
+                            element.send_keys(Keys.END)
                         except Exception:
                             pass  # click事件触发失败不影响后续操作
 
