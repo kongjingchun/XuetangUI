@@ -247,7 +247,15 @@ class BasePage:
 
         for attempt in range(2):
             try:
-                element = self._wait_for_element(locator, condition_type="clickable", timeout=timeout)
+                element = None
+                use_js_click_fallback = False
+                try:
+                    element = self._wait_for_element(locator, condition_type="clickable", timeout=timeout)
+                except TimeoutException:
+                    # 兜底：部分环境（如 Linux Headless、iframe 内表格按钮）下元素已在 DOM 但未满足 clickable，改用 presence + JS 点击
+                    log.warning(f"等待元素可点击超时，尝试等待元素存在后使用 JavaScript 点击：{locator_expression}")
+                    element = self._wait_for_element(locator, condition_type="presence", timeout=timeout)
+                    use_js_click_fallback = True
                 time.sleep(0.1)
 
                 if need_hover:
@@ -265,6 +273,16 @@ class BasePage:
                     time.sleep(0.15)
                 except Exception as scroll_error:
                     log.warning(f"滚动元素失败，继续尝试点击：{scroll_error}")
+
+                if use_js_click_fallback:
+                    try:
+                        self.driver.execute_script("arguments[0].click();", element)
+                        time.sleep(0.1)
+                        self.wait_for_ready_state_complete(timeout=1)
+                        log.info(f"元素 {locator_expression} JavaScript 点击成功")
+                        return self if fluent else True
+                    except Exception as js_error:
+                        raise Exception(f"元素 {locator_expression} JavaScript 点击失败：{js_error}")
 
                 # 尝试多种点击方式
                 element_ref = element
