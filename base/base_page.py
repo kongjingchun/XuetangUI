@@ -304,12 +304,11 @@ class BasePage:
                 except Exception as scroll_error:
                     log.warning(f"滚动元素失败，继续尝试点击：{scroll_error}")
 
-                # 统一尝试多种点击方式（先普通点击，再 ActionChains，最后 JavaScript）
+                # 先普通点击，失败则用 JavaScript 点击
                 element_ref = element
                 last_click_error = None
                 click_methods = [
                     ("普通点击", lambda: element_ref.click()),
-                    ("ActionChains点击", lambda: ActionChains(self.driver).move_to_element(element_ref).click().perform()),
                     ("JavaScript点击", lambda: self.driver.execute_script("arguments[0].click();", element_ref)),
                 ]
 
