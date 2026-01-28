@@ -25,6 +25,8 @@ class UserManagePage(BasePage):
     # ======================元素定位器（静态）======================
     # 用户管理 iframe
     USER_MANAGE_IFRAME = (By.XPATH, "//iframe[@id='app-iframe-2006']")
+    # 工号搜索输入框
+    SEARCH_CODE_INPUT = (By.XPATH, "//div[./label[text()='工号筛选：']]//input")
     # 新增用户下拉入口（悬停后出现角色选项）
     ADD_USER_BUTTON = (By.XPATH, "//div[@class='el-dropdown toolbar-button']")
     # 创建用户弹窗的提交按钮
@@ -37,8 +39,6 @@ class UserManagePage(BasePage):
     USER_BIND_CONFIRM_BUTTON = (By.XPATH, "//span[contains(.,'确认绑定')]/parent::button")
     # 绑定成功 toast 文案
     BIND_SUCCESS_ALERT = (By.XPATH, "//p[contains(text(),'绑定用户成功')]")
-    # 列表上方工号/学号筛选输入框
-    SEARCH_CODE_INPUT = (By.XPATH, "//input[contains(@placeholder,'请输入工号/学号')]")
     # 编辑弹窗中的删除用户按钮
     DELETE_USER_BUTTON = (By.XPATH, "//button[contains(.,'删除用户')]")
     # 删除二次确认弹窗的删除按钮
@@ -100,7 +100,7 @@ class UserManagePage(BasePage):
     def bind_user(self, user, user_id):
         """按用户标识搜索后，将平台用户 ID 绑定到对应用户，返回是否出现绑定成功提示。"""
         self.switch_to_iframe(self.USER_MANAGE_IFRAME)  # 切入用户管理 iframe
-        self.input_text(self.get_search_input_locator("工号"), user)  # 按工号搜索
+        self.input_text(self.SEARCH_CODE_INPUT, user)  # 按工号搜索
         sleep(1)  # 等待列表刷新
         self.click(self.get_user_bind_button_locator(user))  # 点击该用户的绑定按钮
         self.input_text(self.USER_BIND_INPUT, user_id)  # 输入平台用户 ID
@@ -113,7 +113,7 @@ class UserManagePage(BasePage):
     def delete_user_by_code(self, code):
         """按工号搜索后进入编辑并删除该用户，返回是否出现删除成功提示。"""
         self.switch_to_iframe(self.USER_MANAGE_IFRAME)  # 切入用户管理 iframe
-        self.input_text(self.get_search_input_locator("工号"), code)  # 按工号搜索
+        self.input_text(self.SEARCH_CODE_INPUT, code)  # 按工号搜索
         sleep(1)  # 等待列表刷新
         self.click(self.get_edit_button_by_code_locator(code), timeout=15)  # 点击该用户的编辑按钮
         self.click(self.DELETE_USER_BUTTON, timeout=15)  # 点击删除用户

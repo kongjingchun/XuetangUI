@@ -407,7 +407,7 @@ class BasePage:
 
                     # 等待页面就绪
                     self.wait_for_ready_state_complete()
-                    log.info(f"元素 {locator_expression} 输入成功")
+                    log.info("普通方式输入成功")
                     return self if fluent else True
 
                 except Exception as send_error:
@@ -449,7 +449,7 @@ class BasePage:
 
                         # 等待页面就绪
                         self.wait_for_ready_state_complete()
-                        log.info(f"元素 {locator_expression} 使用JavaScript输入成功")
+                        log.info(f"使用JavaScript输入成功")
                         return self if fluent else True
                     except Exception as js_error:
                         # JavaScript输入也失败
