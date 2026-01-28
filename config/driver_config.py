@@ -106,59 +106,35 @@ class DriverConfig:
             # Linux系统默认使用headless，Mac和Windows默认不使用
             use_headless = sys.platform.startswith("linux")
         
-        # Headless模式相关配置（所有平台都支持）
+        # Headless模式相关配置（所有平台统一，参考 Chrome 官方与 Selenium 最佳实践）
+        # 参考：https://developer.chrome.com/docs/chromium/new-headless
+        # 要点：1) 使用 --headless（Chrome 112+ 已与 headful 共用代码）；2) 必须设置 --window-size（否则 Linux 等易出现点击/输入异常）
         headless_args = []
         if use_headless:
-            # macOS 上使用传统的 headless 模式，更稳定
-            if sys.platform == "darwin":
-                headless_args = [
-                    "--headless",  # macOS 上使用传统 headless 模式，更稳定
-                    "--window-size=1920,1080",  # 设置窗口大小（Headless 模式必需）
-                    "--disable-software-rasterizer",  # 禁用软件光栅化
-                    "--disable-extensions",  # 禁用扩展
-                    "--disable-background-networking",  # 禁用后台网络
-                    "--disable-background-timer-throttling",  # 禁用后台定时器节流
-                    "--disable-renderer-backgrounding",  # 禁用渲染器后台化
-                    "--disable-backgrounding-occluded-windows",  # 禁用被遮挡窗口的后台化
-                    "--disable-breakpad",  # 禁用崩溃报告
-                    "--disable-component-extensions-with-background-pages",  # 禁用有后台页面的组件扩展
-                    "--disable-default-apps",  # 禁用默认应用
-                    "--disable-domain-reliability",  # 禁用域可靠性
-                    "--disable-features=TranslateUI",  # 禁用翻译UI
-                    "--disable-ipc-flooding-protection",  # 禁用IPC洪水保护
-                    "--disable-sync",  # 禁用同步
-                    "--metrics-recording-only",  # 仅记录指标
-                    "--no-first-run",  # 不运行首次运行向导
-                    "--safebrowsing-disable-auto-update",  # 禁用安全浏览自动更新
-                    "--enable-automation",  # 启用自动化
-                    "--password-store=basic",  # 使用基本密码存储
-                    "--remote-debugging-port=0",  # 随机选择调试端口
-                ]
-            else:
-                # Linux 和 Windows 使用新的 headless 模式
-                headless_args = [
-                    "--headless=new",  # 使用新的无头模式（支持Linux、Windows）
-                    "--disable-software-rasterizer",  # 禁用软件光栅化
-                    "--disable-extensions",  # 禁用扩展
-                    "--disable-background-networking",  # 禁用后台网络
-                    "--disable-background-timer-throttling",  # 禁用后台定时器节流
-                    "--disable-renderer-backgrounding",  # 禁用渲染器后台化
-                    "--disable-backgrounding-occluded-windows",  # 禁用被遮挡窗口的后台化
-                    "--disable-breakpad",  # 禁用崩溃报告
-                    "--disable-component-extensions-with-background-pages",  # 禁用有后台页面的组件扩展
-                    "--disable-default-apps",  # 禁用默认应用
-                    "--disable-domain-reliability",  # 禁用域可靠性
-                    "--disable-features=TranslateUI",  # 禁用翻译UI
-                    "--disable-ipc-flooding-protection",  # 禁用IPC洪水保护
-                    "--disable-sync",  # 禁用同步
-                    "--metrics-recording-only",  # 仅记录指标
-                    "--no-first-run",  # 不运行首次运行向导
-                    "--safebrowsing-disable-auto-update",  # 禁用安全浏览自动更新
-                    "--enable-automation",  # 启用自动化
-                    "--password-store=basic",  # 使用基本密码存储
-                    "--remote-debugging-port=0",  # 随机选择调试端口
-                ]
-            DriverConfig.log.info(f"启用Headless模式（{sys.platform}）")
+            headless_args = [
+                "--headless",  # 统一使用 --headless（各平台一致，避免 Linux 上 --headless=new 的焦点/点击问题）
+                "--window-size=1920,1080",  # Headless 下必须设置视口，否则元素“可见/可点击”判断易出错
+                "--disable-software-rasterizer",
+                "--disable-extensions",
+                "--disable-background-networking",
+                "--disable-background-timer-throttling",
+                "--disable-renderer-backgrounding",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-breakpad",
+                "--disable-component-extensions-with-background-pages",
+                "--disable-default-apps",
+                "--disable-domain-reliability",
+                "--disable-features=TranslateUI",
+                "--disable-ipc-flooding-protection",
+                "--disable-sync",
+                "--metrics-recording-only",
+                "--no-first-run",
+                "--safebrowsing-disable-auto-update",
+                "--enable-automation",
+                "--password-store=basic",
+                "--remote-debugging-port=0",
+            ]
+            DriverConfig.log.info(f"启用Headless模式（{sys.platform}），视口 1920x1080")
         else:
             DriverConfig.log.info(f"使用有界面模式（{sys.platform}）")
         
