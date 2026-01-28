@@ -383,7 +383,45 @@ class BasePage:
                     f"[input_text] attempt={attempt + 1}/2 locator={locator_expression} "
                     f"timeout={timeout} clear_first={clear_first} need_enter={need_enter}"
                 )
-                element = self._wait_for_element(locator, condition_type="visible", timeout=timeout)
+                try:
+                    element = self._wait_for_element(locator, condition_type="visible", timeout=timeout)
+                except TimeoutException as wait_err:
+                    # 等待可见超时：输出尽可能多的现场信息，便于定位是 iframe 未就绪/元素被遮罩/命中错元素等
+                    try:
+                        frame_id = self.driver.execute_script("return window.frameElement && window.frameElement.id;")
+                    except Exception:
+                        frame_id = None
+                    try:
+                        candidates = self.driver.find_elements(locate_type, locator_expression)
+                        log.info(f"[input_text][timeout] frameElement.id={frame_id} candidates={len(candidates)}")
+                        for idx, cand in enumerate(candidates[:5]):  # 最多打印前5个
+                            try:
+                                log.info(
+                                    f"[input_text][timeout] cand[{idx}] displayed={cand.is_displayed()} enabled={cand.is_enabled()} "
+                                    f"rect={cand.rect} id={cand.get_attribute('id')} "
+                                    f"placeholder={cand.get_attribute('placeholder')} class={cand.get_attribute('class')} "
+                                    f"value={cand.get_attribute('value')}"
+                                )
+                            except Exception as cand_err:
+                                log.warning(f"[input_text][timeout] cand[{idx}] 读取属性失败：{cand_err}")
+                    except Exception as list_err:
+                        log.warning(f"[input_text][timeout] 枚举候选元素失败：{list_err}")
+
+                    # 常见遮罩/弹窗（ElementUI）：v-modal、dialog wrapper
+                    try:
+                        overlay_info = self.driver.execute_script(
+                            "const v = document.querySelectorAll('.v-modal');"
+                            "const d = document.querySelectorAll('.el-dialog__wrapper');"
+                            "return {"
+                            "  v_modal: Array.from(v).map(e=>({display:getComputedStyle(e).display, opacity:getComputedStyle(e).opacity, z:e.style.zIndex||getComputedStyle(e).zIndex})),"
+                            "  dialog: Array.from(d).map(e=>({display:getComputedStyle(e).display, z:e.style.zIndex||getComputedStyle(e).zIndex}))"
+                            "};"
+                        )
+                        log.info(f"[input_text][timeout] overlay={overlay_info}")
+                    except Exception as overlay_err:
+                        log.warning(f"[input_text][timeout] 获取遮罩/弹窗信息失败：{overlay_err}")
+
+                    raise wait_err
 
                 # 滚动元素到可视区域中心位置
                 self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'smooth'});", element)
