@@ -224,6 +224,38 @@ class BasePage:
 
     # ==================== 元素交互操作 ====================
 
+    def _get_click_diagnostic(self, locator_expression, attempt, error, element=None):
+        """收集 click 失败时的诊断信息，便于定位问题。不抛异常。"""
+        parts = [f"locator={locator_expression}", f"attempt={attempt + 1}", f"error={type(error).__name__}: {error}"]
+        try:
+            if element is not None:
+                tag = element.tag_name
+                disp = element.is_displayed()
+                ena = element.is_enabled()
+                rect = element.rect
+                r = f"x={rect.get('x')},y={rect.get('y')},w={rect.get('width')},h={rect.get('height')}"
+                aid = element.get_attribute("id") or ""
+                txt = (element.text or "")[:80]
+                cls = (element.get_attribute("class") or "")[:80]
+                parts.append(f"element: tag={tag} displayed={disp} enabled={ena} rect=({r}) id={aid!r} text={txt!r} class={cls!r}")
+            else:
+                parts.append("element=(未获取到)")
+        except Exception:
+            parts.append("element=(无法获取或已过期)")
+        try:
+            ae = self.driver.execute_script(
+                "var e = document.activeElement; if (!e) return 'null'; return e.tagName + (e.id ? '#'+e.id : '') + ' ' + (e.className || '').slice(0,40);"
+            )
+            parts.append(f"activeElement={ae}")
+        except Exception:
+            parts.append("activeElement=(无法获取)")
+        try:
+            url = self.driver.current_url
+            parts.append(f"url={url[:100]}")
+        except Exception:
+            pass
+        return " | ".join(parts)
+
     def click(self, locator, timeout=10, need_hover=False, fluent=False):
         """
         点击元素（Selenium 官方标准方法）
@@ -283,10 +315,12 @@ class BasePage:
                         log.info(f"元素 {locator_expression} JavaScript 点击成功")
                         return self if fluent else True
                     except Exception as js_error:
+                        log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, js_error, element)}")
                         raise Exception(f"元素 {locator_expression} JavaScript 点击失败：{js_error}")
 
                 # 尝试多种点击方式
                 element_ref = element
+                last_click_error = None
                 click_methods = [
                     ("普通点击", lambda: element_ref.click()),
                     ("ActionChains点击", lambda: ActionChains(self.driver).move_to_element(element_ref).click().perform()),
@@ -300,6 +334,7 @@ class BasePage:
                         log.info(f"{method_name}成功")
                         break
                     except Exception as click_error:
+                        last_click_error = click_error
                         error_msg = str(click_error).lower()
                         is_last_method = method_name == click_methods[-1][0]
                         if is_last_method:
@@ -317,6 +352,8 @@ class BasePage:
                                 log.warning(f"{method_name}失败：{click_error}，尝试下一种方法")
                             continue
                 else:
+                    err = last_click_error or Exception("所有点击方式均未成功")
+                    log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, err, element)}")
                     raise Exception("所有点击方式都失败了")
 
                 self.wait_for_ready_state_complete(timeout=1)  # 减少等待时间
@@ -325,27 +362,31 @@ class BasePage:
                 log.info(f"元素 {locator_expression} 点击成功")
                 return self if fluent else True
 
-            except StaleElementReferenceException:
+            except StaleElementReferenceException as e:
                 if attempt < 1:
                     log.warning(f"元素 {locator_expression} 点击时发生stale element异常，等待页面刷新后重试1次")
                     self.wait_for_ready_state_complete(timeout=5)
                     time.sleep(0.3)
                     continue
                 else:
+                    log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, e, element)}")
                     raise Exception(f"元素 {locator_expression} 点击失败：页面元素过期（已重试1次）")
             except TimeoutException as e:
                 if attempt < 1:
                     log.warning(f"元素点击超时（第{attempt + 1}次尝试）: 将重试1次")
                     time.sleep(0.3)
                     continue
+                log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, e, None)}")
                 raise Exception(f"元素 {locator_expression} 点击失败：元素超时未出现或不可点击（已重试1次）")
             except Exception as e:
                 if attempt < 1:
                     log.warning(f"元素点击失败（第{attempt + 1}次尝试）: {e}，将重试1次")
                     time.sleep(0.3)
                     continue
+                log.warning(f"[click] 失败 详细: {self._get_click_diagnostic(locator_expression, attempt, e, element)}")
                 raise Exception(f"元素 {locator_expression} 点击失败（已重试1次）: {e}")
 
+        log.warning(f"[click] 失败 详细: locator={locator_expression} attempt=2 已重试1次均失败")
         raise Exception(f"元素 {locator_expression} 点击失败：已重试1次均失败")
 
     def input_text(self, locator, text, timeout=10, clear_first=True, need_enter=False, fluent=False):
