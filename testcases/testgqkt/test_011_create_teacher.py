@@ -117,27 +117,22 @@ class TestCreateTeacher:
     @pytest.mark.run(order=217)
     @allure.story("初始化教师密码")
     def test_003_init_teacher_password(self, driver):
-        """
-        测试初始化密码流程
-
-        Args:
-            driver: WebDriver实例（通过pytest fixture注入）
-
-        Returns:
-            None
-        """
-        # 教师信息
-        teacher_login_info = GetConf().get_user_info("teacher")
         # CMS教师信息
         teacher_cms_user_info = GetConf().get_user_info("teacher_cms")
+        # 教师信息
+        teacher_user_info = GetConf().get_user_info("teacher")
 
         # 使用TestContextHelper封装公共操作
         helper = TestContextHelper(driver)
         login_page = helper.login_page
 
         with allure.step("初始化教师密码"):
-            # 使用教务管理员工号作为账号，工号后6位作为密码
-            teacher_work_number = teacher_cms_user_info["工号"]
+            # 使用教师工号作为账号，工号后6位作为密码
+            teacher_work_number = teacher_user_info["工号"]
+            teacher_login_info = {
+                "username": teacher_work_number,
+                "password": teacher_work_number[-6:] if len(teacher_work_number) >= 6 else teacher_work_number
+            }
             helper.login(teacher_login_info, step_description="登录教师（初始化密码）")
             result = login_page.init_password(teacher_cms_user_info["password"])
             add_img_2_report(driver, "初始化教师密码")
