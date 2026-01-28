@@ -59,8 +59,8 @@ class TeachingClassManagementPage(CourseWorkbenchPage):
     def get_allow_student_drop_switch_locator(self, boolean=True):
         """是否允许学生退课（True/False）→ 对应开关定位器。"""
         if boolean:
-            return (By.XPATH, "//div[./label[text()='是否允许学生退课']]//label[./span[text()='是']]")
-        return (By.XPATH, "//div[./label[text()='是否允许学生退课']]//label[./span[text()='否']]")
+            return (By.XPATH, "//div[./label[text()='是否允许学生自主退课']]//label[./span[text()='是']]/span[1]")
+        return (By.XPATH, "//div[./label[text()='是否允许学生自主退课']]//label[./span[text()='否']]/span[1]")
 
     def get_teaching_class_locator(self, value):
         """教学班名称或编号 → 列表中该教学班单元格/行定位器（用于校验是否创建成功）。"""
